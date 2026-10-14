@@ -4,46 +4,78 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { useLocalData } from "@/lib/local-store";
+import { taskTimeLabel } from "@/lib/tasks/format";
+import { countdown, lastSevenDays, nextUpTask, streakDays } from "@/lib/tasks/stats";
+import { useNow } from "@/lib/use-now";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Orb } from "@/components/ui/Orb";
-import { Surface } from "@/components/ui/Surface";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { NAV_ITEMS } from "./nav-items";
 import { ProfileMenu } from "./ProfileMenu";
 
-/** Navigation panel for tablet and desktop. Can fold to an icon rail. */
+// "auto" = icon rail on tablets, full sidebar on desktop (pure CSS, so no
+// layout jump on load). Clicking the toggle pins one or the other.
+type Mode = "auto" | "expanded" | "collapsed";
+
+const WIDTH: Record<Mode, string> = {
+  auto: "w-16 xl:w-62",
+  expanded: "w-62",
+  collapsed: "w-16",
+};
+const SHOW_WHEN_EXPANDED: Record<Mode, string> = {
+  auto: "hidden xl:flex",
+  expanded: "flex",
+  collapsed: "hidden",
+};
+const SHOW_WHEN_COLLAPSED: Record<Mode, string> = {
+  auto: "flex xl:hidden",
+  expanded: "hidden",
+  collapsed: "flex",
+};
+
 export function Sidebar() {
-  const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-  const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
+  const [mode, setMode] = useState<Mode>("auto");
 
   return (
-    <Surface
-      as="aside"
-      variant="glass"
-      className={`hidden h-full flex-col rounded-card p-3 transition-[width] duration-300 ease-out md:flex ${
-        collapsed ? "w-[76px] items-center" : "w-[260px]"
-      }`}
+    <aside
+      className={cn(
+        "hidden h-full shrink-0 border-r bg-card/60 backdrop-blur-xl transition-[width] duration-200 ease-out md:block",
+        WIDTH[mode],
+      )}
     >
-      <div
-        className={`flex gap-2 ${collapsed ? "flex-col items-center" : "items-center justify-between pl-1.5"}`}
-      >
-        <div className="flex items-center gap-2.5">
-          <Orb size={30} />
-          {!collapsed && (
-            <span className="text-lg font-bold tracking-tight">teman</span>
-          )}
-        </div>
-        <button
-          type="button"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          aria-expanded={!collapsed}
-          className="flex size-11 items-center justify-center rounded-full text-text-3 transition hover:bg-surface-2 hover:text-text"
-        >
-          <ToggleIcon className="size-[18px]" strokeWidth={1.5} />
-        </button>
+      <ExpandedSidebar
+        className={SHOW_WHEN_EXPANDED[mode]}
+        onCollapse={() => setMode("collapsed")}
+      />
+      <CollapsedSidebar
+        className={SHOW_WHEN_COLLAPSED[mode]}
+        onExpand={() => setMode("expanded")}
+      />
+    </aside>
+  );
+}
+
+function ExpandedSidebar({ className, onCollapse }: { className: string; onCollapse: () => void }) {
+  const pathname = usePathname();
+
+  return (
+    <div className={cn("h-full flex-col gap-6 p-4", className)}>
+      <div className="flex items-center gap-3 pl-1">
+        <Orb size={28} />
+        <span className="flex-1 text-base font-semibold tracking-tight">teman</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon-sm" onClick={onCollapse} aria-label="Collapse sidebar">
+              <PanelLeftClose strokeWidth={1.5} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Collapse</TooltipContent>
+        </Tooltip>
       </div>
 
-      <nav aria-label="Main" className="mt-6 w-full">
+      <nav aria-label="Main">
         <ul className="space-y-1">
           {NAV_ITEMS.map(({ href, label, Icon }) => {
             const active = pathname.startsWith(href);
@@ -52,17 +84,15 @@ export function Sidebar() {
                 <Link
                   href={href}
                   aria-current={active ? "page" : undefined}
-                  title={collapsed ? label : undefined}
-                  className={`flex h-11 items-center gap-3 rounded-full text-[15px] font-medium transition ${
-                    collapsed ? "justify-center" : "px-4"
-                  } ${
+                  className={cn(
+                    "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
                     active
-                      ? "bg-accent-soft text-accent shadow-active"
-                      : "text-text-2 hover:bg-surface-2 hover:text-text"
-                  }`}
+                      ? "bg-brand-soft text-brand"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  )}
                 >
-                  <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
-                  <span className={collapsed ? "sr-only" : ""}>{label}</span>
+                  <Icon className="size-5" strokeWidth={1.5} />
+                  {label}
                 </Link>
               </li>
             );
@@ -70,9 +100,114 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      <div className="mt-auto w-full">
-        <ProfileMenu variant={collapsed ? "pill-collapsed" : "pill"} />
+      <div className="mt-auto space-y-3">
+        <SidebarInsights />
+        <ProfileMenu variant="pill" />
       </div>
-    </Surface>
+    </div>
+  );
+}
+
+function startsIn(dueAt: string, now: Date): string {
+  const left = countdown(dueAt, now);
+  return left === "now" ? "now" : `in ${left}`;
+}
+
+/** "Next up" mini card + streak, so the sidebar earns its space. */
+function SidebarInsights() {
+  const data = useLocalData();
+  const now = useNow(1000);
+  if (!data || !now) return null;
+
+  const next = nextUpTask(data.tasks, now);
+  const streak = streakDays(data.tasks, now);
+  const week = lastSevenDays(data.tasks, now);
+
+  return (
+    <div className="space-y-3 rounded-xl border bg-card p-3">
+      <Link
+        href="/tasks"
+        className="block rounded-lg p-1 outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/40"
+      >
+        <p className="text-xs font-medium text-muted-foreground">Next up</p>
+        {next ? (
+          <>
+            <p className="mt-1 truncate text-sm font-medium">{next.title}</p>
+            <p className="mt-1 flex items-center justify-between gap-2 font-mono text-xs tabular-nums text-muted-foreground">
+              <span className="truncate">{taskTimeLabel(next, now)}</span>
+              <span className="shrink-0 text-brand">{startsIn(next.dueAt!, now)}</span>
+            </p>
+          </>
+        ) : (
+          <p className="mt-1 text-sm text-muted-foreground">Nothing scheduled</p>
+        )}
+      </Link>
+      <div className="flex items-center justify-between gap-2 border-t px-1 pt-3">
+        <p className="text-meta font-medium whitespace-nowrap">
+          <span aria-hidden="true">🔥 </span>
+          {streak}-day streak
+        </p>
+        <div className="flex shrink-0 gap-1" aria-hidden="true">
+          {week.map((d) => (
+            <span
+              key={d.key}
+              className={cn("size-1.5 rounded-full", d.count > 0 ? "bg-brand" : "bg-foreground/15")}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CollapsedSidebar({ className, onExpand }: { className: string; onExpand: () => void }) {
+  const pathname = usePathname();
+
+  return (
+    <div className={cn("h-full flex-col items-center gap-4 py-4", className)}>
+      <Orb size={28} />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" onClick={onExpand} aria-label="Expand sidebar">
+            <PanelLeftOpen strokeWidth={1.5} />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right">Expand</TooltipContent>
+      </Tooltip>
+
+      <nav aria-label="Main">
+        <ul className="space-y-1">
+          {NAV_ITEMS.map(({ href, label, Icon }) => {
+            const active = pathname.startsWith(href);
+            return (
+              <li key={href}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={href}
+                      aria-label={label}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "flex size-10 items-center justify-center rounded-lg outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
+                        active
+                          ? "bg-brand-soft text-brand"
+                          : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                      )}
+                    >
+                      <Icon className="size-5" strokeWidth={1.5} />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{label}</TooltipContent>
+                </Tooltip>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <div className="mt-auto">
+        <ProfileMenu variant="icon" />
+      </div>
+    </div>
   );
 }

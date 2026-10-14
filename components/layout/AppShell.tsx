@@ -1,42 +1,34 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { usePathname } from "next/navigation";
-import { TodayPanel } from "@/components/tasks/TodayPanel";
-import { Toast } from "@/components/ui/Toast";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { BottomNav } from "./BottomNav";
 import { GlowBackground } from "./GlowBackground";
 import { Sidebar } from "./Sidebar";
 import { ViewportSync } from "./ViewportSync";
 
 /**
- * Phone: full-screen content + floating tab bar.
- * Tablet: collapsible sidebar | content.
- * Desktop: a 3-column grid — sidebar | chat | "Today" panel.
+ * Phone: full-screen page + bottom tab bar.
+ * Tablet: icon sidebar (expandable) + page.
+ * Desktop: 248px sidebar + page (content max 1120px, centred).
  */
 export function AppShell({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-  const onChat = pathname.startsWith("/chat");
-
   return (
-    <>
+    <TooltipProvider delayDuration={300}>
       <GlowBackground />
       <ViewportSync />
 
-      <div
-        className={`relative z-10 h-[var(--app-h)] md:grid md:grid-rows-[minmax(0,1fr)] md:gap-4 md:p-4 ${
-          onChat
-            ? "md:grid-cols-[auto_minmax(0,1fr)] xl:grid-cols-[auto_minmax(0,1fr)_340px]"
-            : "md:grid-cols-[auto_minmax(0,1fr)]"
-        }`}
-      >
+      {/* Solid strip under the iPhone status bar so content doesn't scroll behind the clock. */}
+      <div className="fixed inset-x-0 top-0 z-40 h-[env(safe-area-inset-top)] bg-background/90 backdrop-blur-xl md:hidden" />
+
+      <div className="relative z-10 flex h-[var(--app-h)]">
         <Sidebar />
-        <main className="relative h-full min-h-0 min-w-0">{children}</main>
-        {onChat && <TodayPanel />}
+        <main className="h-full min-w-0 flex-1">{children}</main>
       </div>
 
       <BottomNav />
-      <Toast />
-    </>
+      <Toaster />
+    </TooltipProvider>
   );
 }

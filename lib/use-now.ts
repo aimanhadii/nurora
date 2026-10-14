@@ -1,38 +1,54 @@
 import { useSyncExternalStore } from "react";
 
-// One shared clock for the whole app, ticking every 30s while anything
-// is listening. It is null on the server, where "now" would be the
-// server's time and get baked into the HTML.
+// Shared clocks, one per tick speed (e.g. 30s for most UI, 1s for a
+// countdown). Each only runs while something is listening. They return
+// null on the server, where "now" would be the server's time and get
+// baked into the HTML.
 
-let now: Date | null = null;
-let timer: ReturnType<typeof setInterval> | undefined;
-const listeners = new Set<() => void>();
+type Clock = {
+  now: Date | null;
+  timer?: ReturnType<typeof setInterval>;
+  listeners: Set<() => void>;
+  subscribe: (listener: () => void) => () => void;
+  getSnapshot: () => Date;
+};
 
-function tick() {
-  now = new Date();
-  listeners.forEach((listener) => listener());
-}
+const clocks = new Map<number, Clock>();
 
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  if (!timer) {
-    now = new Date();
-    timer = setInterval(tick, 30_000);
-  }
-  return () => {
-    listeners.delete(listener);
-    if (listeners.size === 0) {
-      clearInterval(timer);
-      timer = undefined;
-    }
+function getClock(intervalMs: number): Clock {
+  const existing = clocks.get(intervalMs);
+  if (existing) return existing;
+
+  const clock: Clock = {
+    now: null,
+    listeners: new Set(),
+    subscribe(listener) {
+      clock.listeners.add(listener);
+      if (!clock.timer) {
+        clock.now = new Date();
+        clock.timer = setInterval(() => {
+          clock.now = new Date();
+          clock.listeners.forEach((l) => l());
+        }, intervalMs);
+      }
+      return () => {
+        clock.listeners.delete(listener);
+        if (clock.listeners.size === 0) {
+          clearInterval(clock.timer);
+          clock.timer = undefined;
+        }
+      };
+    },
+    getSnapshot() {
+      if (!clock.now) clock.now = new Date();
+      return clock.now;
+    },
   };
+  clocks.set(intervalMs, clock);
+  return clock;
 }
 
-function getSnapshot(): Date {
-  if (!now) now = new Date();
-  return now;
-}
-
-export function useNow(): Date | null {
-  return useSyncExternalStore(subscribe, getSnapshot, () => null);
+export function useNow(intervalMs = 30_000): Date | null {
+  const clock = getClock(intervalMs);
+  return useSyncExternalStore(clock.subscribe, clock.getSnapshot, () => null);
 }

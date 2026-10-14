@@ -1,13 +1,20 @@
 "use client";
 
-import { ChevronsUpDown, Monitor, Moon, Sun } from "lucide-react";
+import { ChevronsUpDown, Monitor, Moon, Settings, Sun } from "lucide-react";
 import { PLACEHOLDER_PROFILE } from "@/lib/profile";
+import { setThemePreference, useThemePreference, type ThemePreference } from "@/lib/theme";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  setThemePreference,
-  useThemePreference,
-  type ThemePreference,
-} from "@/lib/theme";
-import { ContextMenu, useContextMenu, type MenuItem } from "@/components/ui/ContextMenu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const THEMES: { value: ThemePreference; label: string; Icon: typeof Sun }[] = [
   { value: "light", label: "Light", Icon: Sun },
@@ -15,68 +22,71 @@ const THEMES: { value: ThemePreference; label: string; Icon: typeof Sun }[] = [
   { value: "system", label: "System", Icon: Monitor },
 ];
 
-export function Avatar({ name, size = 32 }: { name: string; size?: number }) {
+export function ProfileAvatar({ className }: { className?: string }) {
   return (
-    <span
-      aria-hidden="true"
-      style={{ width: size, height: size }}
-      className="flex shrink-0 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent"
-    >
-      {name[0]}
-    </span>
+    <Avatar className={className}>
+      <AvatarFallback className="bg-brand-soft text-meta font-medium text-brand">
+        {PLACEHOLDER_PROFILE.name[0]}
+      </AvatarFallback>
+    </Avatar>
   );
 }
 
 /**
- * The profile button: a pill in the sidebar, or just the avatar in phone
- * headers. Opens a menu with the theme choice.
+ * Profile + theme menu. "pill" for the expanded sidebar, "icon" for the
+ * collapsed rail, "avatar" for phone headers.
  */
-export function ProfileMenu({
-  variant,
-}: {
-  variant: "pill" | "pill-collapsed" | "avatar";
-}) {
-  const menu = useContextMenu();
-  const current = useThemePreference();
+export function ProfileMenu({ variant }: { variant: "pill" | "icon" | "avatar" }) {
+  const theme = useThemePreference();
   const name = PLACEHOLDER_PROFILE.name;
 
-  const items: MenuItem[] = THEMES.map(({ value, label, Icon }) => ({
-    label,
-    Icon,
-    checked: current === value,
-    onSelect: () => setThemePreference(value),
-  }));
-
   return (
-    <>
-      <button
-        type="button"
-        {...menu.buttonProps}
+    <DropdownMenu>
+      <DropdownMenuTrigger
         aria-label={`${name}: profile and theme`}
-        className={
-          variant === "pill"
-            ? "flex h-12 w-full items-center gap-3 rounded-full border border-border bg-surface-2 pr-3 pl-2 text-left transition hover:border-border-strong"
-            : variant === "pill-collapsed"
-              ? "flex size-12 items-center justify-center rounded-full border border-border bg-surface-2 transition hover:border-border-strong"
-              : "flex size-11 items-center justify-center rounded-full transition active:scale-95"
-        }
+        className={cn(
+          "flex items-center rounded-full outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
+          variant === "pill" &&
+            "h-12 w-full gap-3 border bg-card pr-3 pl-2 text-left hover:bg-accent aria-expanded:bg-accent",
+          variant === "icon" && "size-11 justify-center hover:bg-accent aria-expanded:bg-accent",
+          variant === "avatar" && "size-11 justify-center",
+        )}
       >
-        <Avatar name={name} />
+        <ProfileAvatar />
         {variant === "pill" && (
           <>
-            <span className="min-w-0 flex-1 truncate text-sm font-semibold">
-              {name}
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-medium">{name}</span>
+              <span className="block truncate text-xs text-muted-foreground">Kuala Lumpur</span>
             </span>
-            <ChevronsUpDown className="size-4 text-text-3" strokeWidth={1.5} />
+            <ChevronsUpDown className="size-4 text-muted-foreground" strokeWidth={1.5} />
           </>
         )}
-      </button>
-      <ContextMenu
-        position={menu.position}
-        items={items}
-        label="Theme"
-        onClose={menu.close}
-      />
-    </>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align={variant === "avatar" ? "end" : "start"}
+        side={variant === "avatar" ? "bottom" : "top"}
+        className="w-56"
+      >
+        <DropdownMenuLabel>Theme</DropdownMenuLabel>
+        <DropdownMenuRadioGroup
+          value={theme}
+          onValueChange={(value) => setThemePreference(value as ThemePreference)}
+        >
+          {THEMES.map(({ value, label, Icon }) => (
+            <DropdownMenuRadioItem key={value} value={value}>
+              <Icon strokeWidth={1.5} />
+              {label}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem disabled>
+          <Settings strokeWidth={1.5} />
+          Settings
+          <span className="ml-auto text-xs text-muted-foreground">Soon</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

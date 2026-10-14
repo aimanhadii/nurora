@@ -40,9 +40,24 @@ export function setThemePreference(preference: ThemePreference) {
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
-  return () => listeners.delete(listener);
+  // "System" can flip on its own when the phone switches to dark mode.
+  const media = window.matchMedia(DARK_QUERY);
+  media.addEventListener("change", listener);
+  return () => {
+    listeners.delete(listener);
+    media.removeEventListener("change", listener);
+  };
 }
 
 export function useThemePreference(): ThemePreference {
   return useSyncExternalStore(subscribe, readPreference, () => "light");
+}
+
+/** The theme actually showing right now ("system" resolved). */
+export function useResolvedTheme(): "light" | "dark" {
+  return useSyncExternalStore(
+    subscribe,
+    () => (document.documentElement.dataset.theme === "dark" ? "dark" : "light"),
+    () => "light",
+  );
 }

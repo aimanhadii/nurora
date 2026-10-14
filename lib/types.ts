@@ -3,6 +3,8 @@ export type TaskStatus = "pending" | "done";
 export type Task = {
   id: string;
   title: string;
+  /** Optional extra detail, shown as a one-line preview. */
+  notes?: string;
   /** UTC ISO string, or null for "someday" tasks with no date. */
   dueAt: string | null;
   /** True when the task has a date but no specific time. */
@@ -27,4 +29,5 @@ export type NewTaskInput = {
   date?: string;
   /** "HH:mm" in the user's timezone. */
   time?: string;
+  notes?: string;
 };

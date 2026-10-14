@@ -1,4 +1,4 @@
-import { showToast } from "./toast";
+import { toast } from "sonner";
 
 /** Copies text; falls back to the old execCommand trick on plain http. */
 export async function copyText(text: string): Promise<boolean> {
@@ -22,6 +22,12 @@ export async function copyText(text: string): Promise<boolean> {
   return ok;
 }
 
+/** Copies and confirms with a toast. */
+export async function copyWithToast(text: string) {
+  if (await copyText(text)) toast.success("Copied");
+  else toast.error("Couldn't copy");
+}
+
 /** Opens the native share sheet when available, otherwise copies. */
 export async function shareText(text: string) {
   if (navigator.share) {
@@ -33,5 +39,5 @@ export async function shareText(text: string) {
       if (error instanceof DOMException && error.name === "AbortError") return;
     }
   }
-  showToast((await copyText(text)) ? "Copied to clipboard" : "Couldn't copy");
+  await copyWithToast(text);
 }

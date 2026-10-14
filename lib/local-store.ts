@@ -2,15 +2,16 @@
 // Slice 2 replaces this with Supabase.
 
 import { useSyncExternalStore } from "react";
-import { dateKeyInDays, localToUtcIso, timeKey } from "./time";
+import { dateKey, dateKeyInDays, localToUtcIso, timeKey } from "./time";
 import type { Message, NewTaskInput, Task } from "./types";
 
 type LocalState = {
   tasks: Task[];
   messages: Message[];
+  savedAffirmations: string[];
 };
 
-const STORAGE_KEY = "teman:v2";
+const STORAGE_KEY = "teman:v3";
 
 let state: LocalState | null = null;
 const listeners = new Set<() => void>();
@@ -24,49 +25,101 @@ function newId(): string {
   );
 }
 
+const HOUR = 60 * 60 * 1000;
+
+/** Realistic sample data, with times relative to now so it always looks alive. */
 function seed(): LocalState {
   const now = new Date();
-  const createdAt = now.toISOString();
-  const today = dateKeyInDays(now, 0);
-  const tomorrow = dateKeyInDays(now, 1);
-  const yesterday = dateKeyInDays(now, -1);
+  const day = (offset: number) => dateKeyInDays(now, offset);
+  const at = (offset: number, time?: string) => localToUtcIso(day(offset), time);
 
-  const task = (
+  const make = (
     title: string,
     dueAt: string | null,
-    allDay = false,
-    done = false,
+    opts: { notes?: string; allDay?: boolean; doneAt?: string } = {},
   ): Task => ({
     id: newId(),
     title,
+    notes: opts.notes,
     dueAt,
-    allDay,
-    status: done ? "done" : "pending",
-    completedAt: done ? createdAt : null,
-    createdAt,
+    allDay: opts.allDay ?? false,
+    status: opts.doneAt ? "done" : "pending",
+    completedAt: opts.doneAt ?? null,
+    createdAt: now.toISOString(),
   });
+
+  // Next two timed tasks: ~75 min from now (rounded to 15 min), then +3h.
+  // If that runs past midnight they move to tomorrow.
+  const slot = new Date(Math.ceil((now.getTime() + 75 * 60_000) / (15 * 60_000)) * 15 * 60_000);
+  const slotDay = dateKey(slot) === day(0) ? 0 : 1;
+  const later = new Date(slot.getTime() + 3 * HOUR);
+  const laterDay = dateKey(later) === day(slotDay) ? slotDay : slotDay + 1;
+
+  const doneOn = (offset: number, time: string) => at(offset, time);
+  const history: [number, string[]][] = [
+    [-1, ["Laundry", "Grocery run", "Read 20 pages"]],
+    [-2, ["Yoga class", "Pay electricity bill"]],
+    [-3, ["Meal prep for the week", "Morning walk", "Call Aisyah", "Clear email inbox"]],
+    // -4: a rest day, which is what ends the streak at 4.
+    [-5, ["Morning walk", "Water the plants"]],
+    [-6, ["Weekly review"]],
+  ];
 
   return {
     tasks: [
-      task("Pay phone bill", localToUtcIso(yesterday, "21:00")),
-      task("Team meeting", localToUtcIso(today, "15:00")),
-      task("Drink 2L water", localToUtcIso(today), true),
-      task("Gym", localToUtcIso(tomorrow, "19:00")),
-      task("Buy groceries", null),
-      task("Morning walk", localToUtcIso(today, "07:00"), false, true),
+      // Today
+      make("Morning walk", at(0, "07:00"), {
+        doneAt: new Date(now.getTime() - 3 * HOUR).toISOString(),
+      }),
+      make("Reply to Mak's WhatsApp", at(0), {
+        allDay: true,
+        doneAt: new Date(now.getTime() - HOUR).toISOString(),
+      }),
+      make("Review Q3 budget deck", at(slotDay, timeKey(slot.toISOString())), {
+        notes: "Check the numbers on slide 12 with Farah",
+      }),
+      make("Gym — leg day", at(laterDay, timeKey(later.toISOString())), {
+        notes: "Squats, lunges, 20 min stretch",
+      }),
+      make("Drink 2L water", at(0), { allDay: true }),
+      // Overdue
+      make("Pay phone bill", at(-1, "21:00"), { notes: "Maxis · RM 98" }),
+      // Upcoming
+      make("Dentist appointment", at(1, "09:30"), { notes: "Klinik Pergigian, Bangsar" }),
+      make("Call mum", at(1, "20:00")),
+      make("Submit medical claim", at(2), { allDay: true, notes: "Receipts are in the blue folder" }),
+      make("Dinner with Sarah", at(4, "20:00"), { notes: "Table for two at Fuego, TRX" }),
+      make("Car service", at(6, "10:00")),
+      // Someday
+      make("Buy groceries", null, { notes: "Eggs, milk, bread, sambal" }),
+      make("Book flights to Penang", null),
+      // History: completed on previous days (feeds the streak and "This week").
+      ...history.flatMap(([offset, titles]) =>
+        titles.map((title, i) =>
+          make(title, at(offset, "18:00"), { doneAt: doneOn(offset, `1${i + 2}:30`) }),
+        ),
+      ),
     ],
     messages: [],
+    savedAffirmations: [],
   };
 }
 
 function load(): LocalState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as LocalState;
+    if (raw) return { savedAffirmations: [], ...JSON.parse(raw) } as LocalState;
   } catch {
     // Corrupt or blocked storage: start fresh.
   }
-  return seed();
+  // Save the sample data right away so a reload shows the same data.
+  const fresh = seed();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh));
+  } catch {
+    // Storage blocked: keep it in memory only.
+  }
+  return fresh;
 }
 
 function getSnapshot(): LocalState {
@@ -94,6 +147,10 @@ function update(change: (current: LocalState) => LocalState) {
   listeners.forEach((listener) => listener());
 }
 
+function updateTasks(change: (tasks: Task[]) => Task[]) {
+  update((s) => ({ ...s, tasks: change(s.tasks) }));
+}
+
 /** Current data, for use outside React (e.g. inside event handlers). */
 export function getLocalData(): LocalState {
   return getSnapshot();
@@ -111,37 +168,45 @@ function schedule(input: NewTaskInput): Pick<Task, "dueAt" | "allDay"> {
   };
 }
 
-export function addTask(input: NewTaskInput) {
+/** Adds a task and returns it (so callers can offer "Undo"). */
+export function addTask(input: NewTaskInput): Task | null {
   const title = input.title.trim();
-  if (!title) return;
+  if (!title) return null;
   const task: Task = {
     id: newId(),
     title,
+    notes: input.notes?.trim() || undefined,
     ...schedule(input),
     status: "pending",
     completedAt: null,
     createdAt: new Date().toISOString(),
   };
-  update((s) => ({ ...s, tasks: [...s.tasks, task] }));
+  updateTasks((tasks) => [...tasks, task]);
+  return task;
 }
 
 export function updateTask(id: string, input: NewTaskInput) {
   const title = input.title.trim();
   if (!title) return;
-  update((s) => ({
-    ...s,
-    tasks: s.tasks.map((t) =>
-      t.id === id ? { ...t, title, ...schedule(input) } : t,
+  updateTasks((tasks) =>
+    tasks.map((t) =>
+      t.id === id
+        ? { ...t, title, notes: input.notes?.trim() || undefined, ...schedule(input) }
+        : t,
     ),
-  }));
+  );
+}
+
+/** Replaces a task wholesale — used to undo edits like snooze or move. */
+export function replaceTask(task: Task) {
+  updateTasks((tasks) => tasks.map((t) => (t.id === task.id ? task : t)));
 }
 
 /** Moves a task to tomorrow, keeping its time of day. */
 export function moveTaskToTomorrow(id: string) {
   const tomorrow = dateKeyInDays(new Date(), 1);
-  update((s) => ({
-    ...s,
-    tasks: s.tasks.map((t) => {
+  updateTasks((tasks) =>
+    tasks.map((t) => {
       if (t.id !== id) return t;
       const time = t.dueAt && !t.allDay ? timeKey(t.dueAt) : undefined;
       return {
@@ -151,33 +216,45 @@ export function moveTaskToTomorrow(id: string) {
         completedAt: null,
       };
     }),
-  }));
+  );
+}
+
+/** Pushes a timed task later by `minutes`. */
+export function snoozeTask(id: string, minutes: number) {
+  updateTasks((tasks) =>
+    tasks.map((t) =>
+      t.id === id && t.dueAt
+        ? {
+            ...t,
+            allDay: false,
+            dueAt: new Date(new Date(t.dueAt).getTime() + minutes * 60_000).toISOString(),
+          }
+        : t,
+    ),
+  );
 }
 
 /** Puts a deleted task back (for "Undo"). */
 export function restoreTask(task: Task) {
-  update((s) =>
-    s.tasks.some((t) => t.id === task.id)
-      ? s
-      : { ...s, tasks: [...s.tasks, task] },
+  updateTasks((tasks) =>
+    tasks.some((t) => t.id === task.id) ? tasks : [...tasks, task],
   );
 }
 
-export function toggleTask(id: string) {
-  update((s) => ({
-    ...s,
-    tasks: s.tasks.map((t) =>
+export function setTaskDone(id: string, done: boolean) {
+  updateTasks((tasks) =>
+    tasks.map((t) =>
       t.id !== id
         ? t
-        : t.status === "done"
-          ? { ...t, status: "pending", completedAt: null }
-          : { ...t, status: "done", completedAt: new Date().toISOString() },
+        : done
+          ? { ...t, status: "done", completedAt: new Date().toISOString() }
+          : { ...t, status: "pending", completedAt: null },
     ),
-  }));
+  );
 }
 
 export function deleteTask(id: string) {
-  update((s) => ({ ...s, tasks: s.tasks.filter((t) => t.id !== id) }));
+  updateTasks((tasks) => tasks.filter((t) => t.id !== id));
 }
 
 export function addMessage(role: Message["role"], content: string) {
@@ -206,6 +283,18 @@ export function restoreMessage(message: Message) {
           ),
         },
   );
+}
+
+/** Saves or un-saves an affirmation. Returns true if it's now saved. */
+export function toggleSavedAffirmation(text: string): boolean {
+  const saved = getSnapshot().savedAffirmations.includes(text);
+  update((s) => ({
+    ...s,
+    savedAffirmations: saved
+      ? s.savedAffirmations.filter((a) => a !== text)
+      : [...s.savedAffirmations, text],
+  }));
+  return !saved;
 }
 
 export function resetLocalData() {

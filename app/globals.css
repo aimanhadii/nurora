@@ -1,206 +1,224 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-/* `dark:` utilities follow our data-theme attribute instead of the OS setting. */
+/* `dark:` utilities follow our data-theme attribute (set before first paint). */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* =====================================================================
-   Design tokens. ONE set of names; the dark block below only swaps
-   values. Components use these names, never raw colours.
+   Tokens — see docs/design.md. Names follow shadcn/ui so its components
+   theme themselves; dark only swaps values.
    ===================================================================== */
 
 :root {
-  /* Page */
-  --bg: #fafafc;
-  --glow-1: #ede9fe; /* lavender */
-  --glow-2: #ddd6fe; /* lilac */
-  --glow-3: #f5d0fe; /* pink-violet hint */
+  --background: #fafafc;
+  --foreground: #0b0b0f;
+  --card: #ffffff;
+  --card-foreground: #0b0b0f;
+  --popover: #ffffff;
+  --popover-foreground: #0b0b0f;
+  --primary: #0b0b0f;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f6;
+  --secondary-foreground: #0b0b0f;
+  --muted: #f4f4f6;
+  --muted-foreground: #6b7280;
+  --subtle-foreground: #8b8f98;
+  --accent: #f1f0f5;
+  --accent-foreground: #0b0b0f;
+  --destructive: #dc2626;
+  --border: rgb(0 0 0 / 7%);
+  --input: rgb(0 0 0 / 10%);
+  --ring: #7c3aed;
 
-  /* Surfaces */
-  --surface: #ffffff; /* cards */
-  --surface-glass: rgb(255 255 255 / 0.8); /* bars with backdrop blur */
-  --surface-2: #f4f4f7; /* chips, inputs, subtle fills */
-  --border: rgb(0 0 0 / 0.06);
-  --border-strong: rgb(0 0 0 / 0.14);
-  --shadow: 0 8px 24px rgb(17 12 46 / 0.06);
-  --shadow-item: 0 1px 3px rgb(17 12 46 / 0.05); /* list rows: small enough not to get clipped */
-  --shadow-raised: 0 16px 48px rgb(17 12 46 / 0.14);
-  --scrim: rgb(17 12 46 / 0.28); /* dims the page behind sheets */
+  --brand: #7c3aed;
+  --brand-foreground: #ffffff;
+  --brand-soft: rgb(124 58 237 / 10%);
+  --danger-soft: #fee2e2;
+  --danger-soft-foreground: #b91c1c;
+  --scrim: rgb(17 12 46 / 24%);
 
-  /* Text */
-  --text: #0b0b0f;
-  --text-2: #6b7280; /* secondary */
-  --text-3: #9ca3af; /* hints */
+  --shadow-card: 0 1px 2px rgb(17 12 46 / 4%), 0 8px 24px rgb(17 12 46 / 5%);
+  --shadow-popover: 0 4px 12px rgb(17 12 46 / 8%), 0 16px 40px rgb(17 12 46 / 12%);
 
-  /* Accent (violet) */
-  --accent: #7c3aed;
-  --accent-fg: #ffffff; /* icons/text on an accent fill */
-  --accent-soft: rgb(124 58 237 / 0.1);
-  --active-glow: 0 0 0 0 transparent;
+  --glow-1: #ede9fe;
+  --glow-2: #ddd6fe;
+  --glow-3: #f5d0fe;
 
-  /* Primary buttons */
-  --primary-bg: #0b0b0f;
-  --primary-fg: #ffffff;
+  --orb-1: #8b5cf6;
+  --orb-2: #d946ef;
+  --orb-3: #c4b5fd;
+  --orb-glow: 0 8px 32px -8px rgb(139 92 246 / 45%);
 
-  /* Chat bubbles */
-  --user-bubble-bg: #0b0b0f;
-  --user-bubble-fg: #ffffff;
-  --bot-bubble-bg: #ffffff;
-
-  /* Danger / overdue */
-  --danger: #dc2626;
-  --danger-soft-bg: #fee2e2;
-  --danger-soft-fg: #b91c1c;
-
-  /* Teman's orb */
-  --orb-1: #8b5cf6; /* violet */
-  --orb-2: #d946ef; /* magenta */
-  --orb-3: #c4b5fd; /* lavender */
-  --orb-glow: 0 8px 32px -8px rgb(139 92 246 / 0.45);
-
-  /* Layout */
-  --app-h: 100dvh; /* visible height while the iOS keyboard is open */
-  --kb: 0px; /* keyboard height */
-  --nav-h: calc(4rem + max(env(safe-area-inset-bottom), 0.75rem));
+  /* Layout (see components/layout/ViewportSync.tsx) */
+  --app-h: 100dvh;
+  --kb: 0px;
+  --tabbar-h: calc(4rem + env(safe-area-inset-bottom));
 
   color-scheme: light;
 }
 
 [data-theme="dark"] {
-  --bg: #09090b;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #131217;
+  --card-foreground: #fafafa;
+  --popover: #18161d;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #09090b;
+  --secondary: #1c1a22;
+  --secondary-foreground: #fafafa;
+  --muted: #1c1a22;
+  --muted-foreground: #a1a1aa;
+  --subtle-foreground: #7c7c86;
+  --accent: #201e27;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --border: rgb(255 255 255 / 8%);
+  --input: rgb(255 255 255 / 12%);
+  --ring: #a78bfa;
+
+  --brand: #a78bfa;
+  --brand-foreground: #09090b;
+  --brand-soft: rgb(167 139 250 / 14%);
+  --danger-soft: rgb(248 113 113 / 14%);
+  --danger-soft-foreground: #fca5a5;
+  --scrim: rgb(0 0 0 / 60%);
+
+  --shadow-card: 0 0 0 0 transparent;
+  --shadow-popover: 0 16px 48px rgb(0 0 0 / 50%);
+
   --glow-1: #2e1065;
   --glow-2: #4c1d95;
   --glow-3: #701a75;
 
-  --surface: #141218;
-  --surface-glass: rgb(20 18 24 / 0.72);
-  --surface-2: #1d1a23;
-  --border: rgb(255 255 255 / 0.08);
-  --border-strong: rgb(255 255 255 / 0.16);
-  --shadow: 0 0 0 0 transparent;
-  --shadow-item: 0 0 0 0 transparent;
-  --shadow-raised: 0 16px 48px rgb(0 0 0 / 0.5);
-  --scrim: rgb(0 0 0 / 0.6);
-
-  --text: #fafafa;
-  --text-2: #a1a1aa;
-  --text-3: #71717a;
-
-  --accent: #a78bfa;
-  --accent-fg: #09090b;
-  --accent-soft: rgb(167 139 250 / 0.14);
-  --active-glow: 0 0 24px -6px rgb(167 139 250 / 0.45);
-
-  --primary-bg: #fafafa;
-  --primary-fg: #09090b;
-
-  --user-bubble-bg: #fafafa;
-  --user-bubble-fg: #09090b;
-  --bot-bubble-bg: #141218;
-
-  --danger: #f87171;
-  --danger-soft-bg: rgb(248 113 113 / 0.14);
-  --danger-soft-fg: #fca5a5;
-
-  --orb-glow: 0 0 48px -4px rgb(167 139 250 / 0.6);
+  --orb-glow: 0 0 48px -4px rgb(167 139 250 / 60%);
 
   color-scheme: dark;
 }
 
-/* The floating tab bar is gone on tablet/desktop and while typing. */
 @media (min-width: 48rem) {
   :root {
-    --nav-h: 0px;
+    --tabbar-h: 0px;
   }
 }
+/* Typing on a phone: the keyboard takes the tab bar's place. */
 :root[data-keyboard] {
-  --nav-h: 0px;
+  --tabbar-h: 0px;
 }
 
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
-  --color-text: var(--text);
-  --color-text-2: var(--text-2);
-  --color-text-3: var(--text-3);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
   --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-fg);
-  --color-accent-soft: var(--accent-soft);
-  --color-primary: var(--primary-bg);
-  --color-primary-fg: var(--primary-fg);
-  --color-user-bubble: var(--user-bubble-bg);
-  --color-user-bubble-fg: var(--user-bubble-fg);
-  --color-bot-bubble: var(--bot-bubble-bg);
-  --color-danger: var(--danger);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-soft-foreground: var(--danger-soft-foreground);
   --color-scrim: var(--scrim);
-  --color-danger-soft: var(--danger-soft-bg);
-  --color-danger-soft-fg: var(--danger-soft-fg);
-  --shadow-soft: var(--shadow);
-  --shadow-raised: var(--shadow-raised);
-  --shadow-active: var(--active-glow);
+
   --font-sans: var(--font-geist-sans);
+  --font-heading: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Two elevations only: cards and popovers. */
+  --shadow-xs: 0 0 0 0 transparent;
+  --shadow-sm: var(--shadow-card);
+  --shadow-md: var(--shadow-popover);
+  --shadow-lg: var(--shadow-popover);
+  --shadow-xl: var(--shadow-popover);
 }
 
 @theme {
-  --radius-card: 22px;
-  --radius-sheet: 28px;
-  --radius-item: 16px;
+  /* Type scale: only these sizes exist (docs/design.md §2). */
+  --text-*: initial;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-meta: 13px;
+  --text-meta--line-height: 18px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-3xl: 32px;
+  --text-3xl--line-height: 40px;
+
+  /* Radius: 8 controls, 12 inputs/rows, 16 cards, full pills. */
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 16px;
+
+  --tracking-tight: -0.02em;
+
+  --animate-message-in: message-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade-in: fade-in 200ms ease-out both;
+  --animate-pop: pop 320ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  --animate-draw: draw 240ms ease-out 60ms both;
+
+  @keyframes message-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.6);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 24;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
 }
 
 /* =====================================================================
-   Surfaces (used through components/ui/Surface.tsx)
-   - surface-card    solid card with a soft shadow
-   - surface-item    list rows (tiny shadow, so folding lists don't clip it)
-   - surface-glass   translucent + blur: bars that float over content
-   - surface-raised  solid with a bigger shadow: menus, sheets, toasts
-   ===================================================================== */
-
-@utility surface-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-
-@utility surface-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-item);
-}
-
-@utility surface-glass {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    background: var(--surface-glass);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    backdrop-filter: blur(20px) saturate(160%);
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    background: var(--surface);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-}
-
-@utility surface-raised {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-raised);
-}
-
-/* =====================================================================
-   Teman's orb: layered radial gradients that slowly morph and turn.
+   Teman's orb: layered radial gradients that slowly morph.
    ===================================================================== */
 
 .orb {
   position: relative;
   flex-shrink: 0;
   border-radius: 9999px;
-  box-shadow: var(--orb-glow);
 }
 .orb::before,
 .orb::after {
@@ -208,27 +226,30 @@
   position: absolute;
   inset: 0;
 }
-/* Body: violet base, magenta pool low-right, lavender pool low-left. */
 .orb::before {
   border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
+  box-shadow: var(--orb-glow);
   background:
     radial-gradient(circle at 72% 70%, var(--orb-2) 0%, transparent 55%),
     radial-gradient(circle at 25% 78%, var(--orb-3) 0%, transparent 50%),
     radial-gradient(circle at 50% 50%, var(--orb-1) 0%, var(--orb-1) 45%, var(--orb-3) 100%);
+}
+.orb[data-quiet]::before {
+  box-shadow: none;
+}
+.orb[data-animated]::before {
   animation: orb-morph 10s ease-in-out infinite alternate;
 }
-/* Glossy highlight top-left — what makes it read as 3D. */
 .orb::after {
   border-radius: 9999px;
-  background: radial-gradient(circle at 32% 26%, rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.15) 22%, transparent 42%);
-}
-.orb[data-thinking]::before {
-  animation-duration: 2.4s;
+  background: radial-gradient(circle at 32% 26%, rgb(255 255 255 / 85%) 0%, rgb(255 255 255 / 15%) 22%, transparent 42%);
 }
 .orb[data-thinking] {
   animation: orb-breathe 1.6s ease-in-out infinite;
 }
-
+.orb[data-thinking]::before {
+  animation-duration: 2.4s;
+}
 @keyframes orb-morph {
   0% {
     border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
@@ -253,96 +274,27 @@
    Motion
    ===================================================================== */
 
-@theme {
-  --animate-message-in: message-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  --animate-fade-in: fade-in 240ms ease-out both;
-  --animate-sheet-up: sheet-up 380ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
-  --animate-dialog-in: dialog-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  --animate-menu-in: menu-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  --animate-pop: pop 360ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
-  --animate-ring: ring 520ms ease-out both;
-  --animate-draw: draw 280ms ease-out 80ms both;
-
-  @keyframes message-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px) scale(0.98);
-    }
-  }
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-  }
-  @keyframes sheet-up {
-    from {
-      transform: translateY(100%);
-    }
-  }
-  @keyframes dialog-in {
-    from {
-      opacity: 0;
-      transform: translateY(12px) scale(0.97);
-    }
-  }
-  @keyframes menu-in {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-  }
-  @keyframes pop {
-    0% {
-      transform: scale(0.75);
-    }
-    55% {
-      transform: scale(1.15);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  @keyframes ring {
-    from {
-      opacity: 0.6;
-      transform: scale(1);
-    }
-    to {
-      opacity: 0;
-      transform: scale(2.1);
-    }
-  }
-  @keyframes draw {
-    from {
-      stroke-dashoffset: 24;
-    }
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-}
-
-/* Smooth colour change while switching themes (added for ~0.4s by lib/theme.ts). */
+/* Smooth colour change while switching themes (added briefly by lib/theme.ts). */
 @media (prefers-reduced-motion: no-preference) {
   .theme-switching,
   .theme-switching *,
   .theme-switching *::before,
   .theme-switching *::after {
     transition:
-      background-color 350ms ease,
-      border-color 350ms ease,
-      color 350ms ease,
-      box-shadow 350ms ease !important;
+      background-color 300ms ease,
+      border-color 300ms ease,
+      color 300ms ease,
+      box-shadow 300ms ease !important;
   }
 }
 
-/* Tab switches crossfade (see the ViewTransition in each page). */
+/* Route changes crossfade (ViewTransition in each page). */
 ::view-transition {
   pointer-events: none;
 }
 ::view-transition-old(*),
 ::view-transition-new(*) {
-  animation-duration: 200ms;
+  animation-duration: 180ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -357,7 +309,6 @@
   ::view-transition-new(*),
   ::view-transition-group(*) {
     animation-duration: 0s !important;
-    animation-delay: 0s !important;
   }
 }
 
@@ -365,45 +316,55 @@
    Base
    ===================================================================== */
 
-html {
-  background: var(--bg);
-  -webkit-tap-highlight-color: transparent;
-  -webkit-text-size-adjust: 100%;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply bg-background font-sans;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior: none;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply tracking-tight;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--brand-soft);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--input) transparent;
+  }
 }
 
-body {
-  @apply bg-bg font-sans text-text antialiased;
-  overscroll-behavior: none;
-}
-
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-::selection {
-  background: var(--accent-soft);
-}
-
-/* Typing on a phone: the keyboard takes the tab bar's place. */
 :root[data-keyboard] .bottom-nav {
   display: none;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-strong) transparent;
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-.no-scrollbar {
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Horizontal scrollers fade out at both edges. */
+@utility fade-x {
+  mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
 }
 
 /* Long-pressable items: no iOS text-selection callout getting in the way. */
-.long-press {
+@utility long-press {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
