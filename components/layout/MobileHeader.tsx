@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type RefObject } from "react";
+import { useEffect, useState, type ReactNode, type RefObject } from "react";
 import { formatLongDate } from "@/lib/time";
 import { useNow } from "@/lib/use-now";
 import { cn } from "@/lib/utils";
@@ -17,15 +17,18 @@ import { ProfileMenu } from "./ProfileMenu";
  * `scrollRef` has scrolled. Tablet/desktop: plain (Chat only shows it there).
  *
  * `className` / `rowClassName` are for tablet/desktop (md:) tweaks only.
+ * `actions`: extra phone-only icon buttons left of the avatar (Chat only).
  */
 export function MobileHeader({
   scrollRef,
   className,
   rowClassName,
+  actions,
 }: {
   scrollRef?: RefObject<HTMLElement | null>;
   className?: string;
   rowClassName?: string;
+  actions?: ReactNode;
 }) {
   const now = useNow();
   const [scrolled, setScrolled] = useState(false);
@@ -57,7 +60,8 @@ export function MobileHeader({
             {now ? formatLongDate(now) : " "}
           </p>
         </div>
-        <div className="md:hidden">
+        <div className="flex items-center md:hidden">
+          {actions}
           <ProfileMenu variant="avatar" />
         </div>
       </div>

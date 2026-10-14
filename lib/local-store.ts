@@ -2,14 +2,17 @@
 // Slice 2 replaces this with Supabase.
 
 import { useSyncExternalStore } from "react";
+import { newId } from "./id";
 import { dateKey, dateKeyInDays, localToUtcIso, timeKey } from "./time";
-import type { Message, NewTaskInput, Task } from "./types";
+import type { NewTaskInput, Task } from "./types";
 
 type LocalState = {
   tasks: Task[];
-  messages: Message[];
   savedAffirmations: string[];
 };
+
+/** Chat messages from before conversations existed (see takeLegacyMessages). */
+export type LegacyMessage = { id: string; role: "user" | "assistant"; content: string; createdAt: string };
 
 const STORAGE_KEY = "nurora:v3";
 /** Where data lived under the app's earlier names (newest first); moved over once. */
@@ -17,15 +20,6 @@ const LEGACY_STORAGE_KEYS = ["ilmora:v3", "teman:v3"];
 
 let state: LocalState | null = null;
 const listeners = new Set<() => void>();
-
-// crypto.randomUUID only exists on https/localhost, and the phone hits
-// the dev server over plain http on the LAN.
-function newId(): string {
-  return (
-    globalThis.crypto?.randomUUID?.() ??
-    `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
-  );
-}
 
 const HOUR = 60 * 60 * 1000;
 
@@ -102,7 +96,6 @@ function seed(): LocalState {
         ),
       ),
     ],
-    messages: [],
     savedAffirmations: [],
   };
 }
@@ -270,32 +263,20 @@ export function deleteTask(id: string) {
   updateTasks((tasks) => tasks.filter((t) => t.id !== id));
 }
 
-export function addMessage(role: Message["role"], content: string) {
-  const message: Message = {
-    id: newId(),
-    role,
-    content,
-    createdAt: new Date().toISOString(),
-  };
-  update((s) => ({ ...s, messages: [...s.messages, message] }));
-}
-
-export function deleteMessage(id: string) {
-  update((s) => ({ ...s, messages: s.messages.filter((m) => m.id !== id) }));
-}
-
-/** Puts a deleted message back in its original place (for "Undo"). */
-export function restoreMessage(message: Message) {
-  update((s) =>
-    s.messages.some((m) => m.id === message.id)
-      ? s
-      : {
-          ...s,
-          messages: [...s.messages, message].sort((a, b) =>
-            a.createdAt.localeCompare(b.createdAt),
-          ),
-        },
-  );
+/**
+ * Hands over chat messages saved before conversations existed, and removes
+ * them from this store. Called once by lib/conversations.ts to migrate.
+ */
+export function takeLegacyMessages(): LegacyMessage[] {
+  const current = getSnapshot() as LocalState & { messages?: LegacyMessage[] };
+  if (!("messages" in current)) return [];
+  const legacy = current.messages ?? [];
+  update((s) => {
+    const rest = { ...s } as LocalState & { messages?: LegacyMessage[] };
+    delete rest.messages;
+    return rest;
+  });
+  return legacy;
 }
 
 /** Saves or un-saves an affirmation. Returns true if it's now saved. */

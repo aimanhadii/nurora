@@ -21,25 +21,29 @@ const VIEWPORTS = [
 ];
 const THEMES = ["light", "dark"];
 
-// A short conversation for the chat screenshots.
+// A short conversation for the chat screenshots (written straight into the
+// conversations store, the way lib/conversations.ts saves it).
 const CONVERSATION = `(() => {
-  const s = JSON.parse(localStorage.getItem('nurora:v3'));
   const t = Date.now();
   const at = (minAgo) => new Date(t - minAgo * 60000).toISOString();
-  s.messages = [
-    { id: 'c1', role: 'user', content: 'Plan my day', createdAt: at(12) },
-    { id: 'c2', role: 'assistant', content: "Here's your day:\\n• 3:00 pm — Review Q3 budget deck\\n• 6:00 pm — Gym, leg day\\n• Drink 2L water", createdAt: at(12) },
-    { id: 'c3', role: 'assistant', content: 'Want me to remind you 15 minutes before the review?', createdAt: at(11) },
-    { id: 'c4', role: 'user', content: 'yes please', createdAt: at(10) },
-    { id: 'c5', role: 'user', content: 'and esok 9.30 dentist', createdAt: at(10) },
-    { id: 'c6', role: 'assistant', content: 'Done! Dentist tomorrow at 9:30 am is on your list. Good luck with the review 💪', createdAt: at(9) },
-  ];
-  localStorage.setItem('nurora:v3', JSON.stringify(s));
+  const m = (id, role, content, minAgo) => ({ id, conversationId: "demo", role, content, createdAt: at(minAgo) });
+  localStorage.setItem("nurora:chats:v1", JSON.stringify({
+    conversations: [{ id: "demo", title: "Plan my day", createdAt: at(12), updatedAt: at(9) }],
+    messages: [
+      m("c1", "user", "Plan my day", 12),
+      m("c2", "assistant", "Here's your day:\n• 3:00 pm — Review Q3 budget deck\n• 6:00 pm — Gym, leg day\n• Drink 2L water", 12),
+      m("c3", "assistant", "Want me to remind you 15 minutes before the review?", 11),
+      m("c4", "user", "yes please", 10),
+      m("c5", "user", "and esok 9.30 dentist", 10),
+      m("c6", "assistant", "Done! Dentist tomorrow at 9:30 am is on your list. Good luck with the review 💪", 9),
+    ],
+    lastOpenedId: "demo",
+  }));
 })()`;
 
 const SCREENS = [
   { name: "home", path: "/home", tall: true },
-  { name: "chat-empty", path: "/chat", setup: "(() => { const s = JSON.parse(localStorage.getItem('nurora:v3')); s.messages = []; localStorage.setItem('nurora:v3', JSON.stringify(s)); })()" },
+  { name: "chat-empty", path: "/chat/new" },
   { name: "chat", path: "/chat", setup: CONVERSATION },
   { name: "tasks-today", path: "/tasks" },
   { name: "tasks-upcoming", path: "/tasks", action: async (p) => p.getByRole("tab", { name: /Upcoming/ }).click() },

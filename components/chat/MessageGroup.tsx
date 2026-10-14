@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Copy, Share, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { deleteMessage, restoreMessage } from "@/lib/local-store";
+import { deleteMessage, restoreMessage } from "@/lib/conversations";
 import { copyWithToast, shareText } from "@/lib/share";
 import { formatTime } from "@/lib/time";
 import type { Message } from "@/lib/types";

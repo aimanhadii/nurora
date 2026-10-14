@@ -1,14 +1,21 @@
-import type { Metadata } from "next";
-import { ViewTransition } from "react";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getMostRecentConversationId, useConversations } from "@/lib/conversations";
 import { ChatScreen } from "@/components/chat/ChatScreen";
 
-export const metadata: Metadata = { title: "Chat" };
+/** /chat → the most recent conversation, or a new one if there are none. */
+export default function ChatIndexPage() {
+  const router = useRouter();
+  const conversations = useConversations();
 
-export default function ChatPage() {
-  return (
-    // Crossfades when switching tabs.
-    <ViewTransition enter="auto" exit="auto" default="none">
-      <ChatScreen />
-    </ViewTransition>
-  );
+  useEffect(() => {
+    if (!conversations) return;
+    const id = getMostRecentConversationId();
+    router.replace(id ? `/chat/${id}` : "/chat/new");
+  }, [conversations, router]);
+
+  // Same screen in its loading state, so nothing jumps while redirecting.
+  return <ChatScreen conversationId={undefined} />;
 }

@@ -1,8 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useId, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { ArrowUp } from "lucide-react";
-import { sendChatMessage, useTyping } from "@/lib/chat";
 import { Button } from "@/components/ui/button";
 import { AddTaskButton } from "@/components/tasks/TaskFormDialog";
 
@@ -12,12 +11,15 @@ const MAX_HEIGHT_PX = 136;
 /**
  * Rounded input card: "+" (add task) on the left, an auto-growing
  * textarea, and a send button that turns primary once there's text.
+ * `onSend` returns false if nothing was sent (the text is then kept).
  */
-export function Composer() {
+export function Composer({ onSend, busy }: { onSend: (text: string) => boolean; busy: boolean }) {
   const [text, setText] = useState("");
-  const typing = useTyping();
   const ref = useRef<HTMLTextAreaElement>(null);
-  const canSend = text.trim().length > 0 && !typing;
+  // Unique per instance: Next keeps the previous chat page mounted (hidden),
+  // so a fixed id would appear twice.
+  const inputId = useId();
+  const canSend = text.trim().length > 0 && !busy;
 
   // Grow with the content, up to 5 lines; then it scrolls.
   useLayoutEffect(() => {
@@ -29,8 +31,7 @@ export function Composer() {
 
   function send() {
     if (!canSend) return;
-    sendChatMessage(text);
-    setText("");
+    if (onSend(text)) setText("");
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -45,11 +46,12 @@ export function Composer() {
   return (
     <div className="flex items-end gap-2 rounded-xl border bg-card p-2 shadow-sm transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
       <AddTaskButton iconOnly variant="ghost" size="icon" className="size-11 md:size-10" />
-      <label htmlFor="chat-input" className="sr-only">
+      <label htmlFor={inputId} className="sr-only">
         Message Nurora
       </label>
       <textarea
-        id="chat-input"
+        id={inputId}
+        data-chat-input
         ref={ref}
         rows={1}
         value={text}

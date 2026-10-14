@@ -16,8 +16,19 @@ export type Task = {
 
 export type MessageRole = "user" | "assistant";
 
+/** One chat thread. Tasks and memories are global, not per conversation. */
+export type Conversation = {
+  id: string;
+  title: string;
+  createdAt: string;
+  /** Bumped on every new message; the history list sorts by it. */
+  updatedAt: string;
+  pinned?: boolean;
+};
+
 export type Message = {
   id: string;
+  conversationId: string;
   role: MessageRole;
   content: string;
   createdAt: string;

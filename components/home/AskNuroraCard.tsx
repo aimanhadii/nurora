@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { sendChatMessage } from "@/lib/chat";
+import { getCurrentConversationId } from "@/lib/conversations";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +19,9 @@ export function AskNuroraCard({ className }: { className?: string }) {
 
   function send(message: string) {
     if (!message.trim()) return;
-    sendChatMessage(message);
-    router.push("/chat");
+    // Continue the current chat, or start one if there isn't any.
+    const id = sendChatMessage(message, getCurrentConversationId());
+    if (id) router.push(`/chat/${id}`);
   }
 
   function handleSubmit(event: FormEvent) {

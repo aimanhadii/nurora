@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Plus } from "lucide-react";
 import { useLocalData } from "@/lib/local-store";
 import { taskTimeLabel } from "@/lib/tasks/format";
 import { lastSevenDays, nextUpTask, streakDays } from "@/lib/tasks/stats";
@@ -18,6 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SidebarChats } from "@/components/chat/history/SidebarChats";
 import { NAV_ITEMS } from "./nav-items";
 import { ProfileMenu } from "./ProfileMenu";
 
@@ -117,7 +118,11 @@ function ExpandedSidebar({
         </ul>
       </nav>
 
-      <div className="mt-auto space-y-3">
+      {/* New chat + Recents take the free space and scroll on their own,
+          so the insights and profile stay pinned to the bottom. */}
+      <SidebarChats />
+
+      <div className="shrink-0 space-y-3">
         <SidebarInsights />
         <ProfileMenu variant="pill" />
       </div>
@@ -239,6 +244,17 @@ function CollapsedSidebar({
           })}
         </ul>
       </nav>
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button asChild variant="outline" size="icon" className="size-10 rounded-lg">
+            <Link href="/chat/new" aria-label="New chat">
+              <Plus className="size-5" strokeWidth={1.5} />
+            </Link>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right">New chat</TooltipContent>
+      </Tooltip>
 
       <div className="mt-auto">
         <ProfileMenu variant="icon" />
