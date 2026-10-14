@@ -10,7 +10,7 @@ import { useNow } from "@/lib/use-now";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Page, PageHeader } from "@/components/layout/Page";
 import { AffirmationCard } from "./AffirmationCard";
-import { AskIlmoraCard } from "./AskIlmoraCard";
+import { AskNuroraCard } from "./AskNuroraCard";
 import { NextUpCard } from "./NextUpCard";
 import { ProgressCard } from "./ProgressCard";
 import { TodayCard } from "./TodayCard";
@@ -75,7 +75,7 @@ export function HomeScreen() {
         />
         <AffirmationCard todayKey={todayKey} saved={data.savedAffirmations} className={SPAN.affirmation} />
         <TodayCard open={open} doneToday={doneToday} now={now} className={SPAN.today} />
-        <AskIlmoraCard className={SPAN.ask} />
+        <AskNuroraCard className={SPAN.ask} />
         <WeekCard days={week} className={SPAN.week} />
       </div>
     </Page>

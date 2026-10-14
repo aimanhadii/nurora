@@ -46,7 +46,7 @@ export function Composer() {
     <div className="flex items-end gap-2 rounded-xl border bg-card p-2 shadow-sm transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
       <AddTaskButton iconOnly variant="ghost" size="icon" className="size-11 md:size-10" />
       <label htmlFor="chat-input" className="sr-only">
-        Message Ilmora
+        Message Nurora
       </label>
       <textarea
         id="chat-input"
@@ -55,7 +55,7 @@ export function Composer() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Ask Ilmora anything..."
+        placeholder="Ask Nurora anything..."
         enterKeyHint="send"
         className="max-h-34 min-h-11 flex-1 resize-none bg-transparent px-1 py-2 text-base outline-none placeholder:text-subtle-foreground md:min-h-10"
       />

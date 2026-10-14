@@ -11,9 +11,9 @@ type LocalState = {
   savedAffirmations: string[];
 };
 
-const STORAGE_KEY = "ilmora:v3";
-/** Where data lived before the app was renamed; moved over once. */
-const LEGACY_STORAGE_KEY = "teman:v3";
+const STORAGE_KEY = "nurora:v3";
+/** Where data lived under the app's earlier names (newest first); moved over once. */
+const LEGACY_STORAGE_KEYS = ["ilmora:v3", "teman:v3"];
 
 let state: LocalState | null = null;
 const listeners = new Set<() => void>();
@@ -107,17 +107,19 @@ function seed(): LocalState {
   };
 }
 
-/** Moves data saved under the old app name to the new key (once). */
-function migrateLegacyKey() {
-  const old = localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (old === null) return;
-  if (localStorage.getItem(STORAGE_KEY) === null) localStorage.setItem(STORAGE_KEY, old);
-  localStorage.removeItem(LEGACY_STORAGE_KEY);
+/** Moves data saved under an old app name to the current key (once). */
+function migrateLegacyKeys() {
+  for (const key of LEGACY_STORAGE_KEYS) {
+    const old = localStorage.getItem(key);
+    if (old === null) continue;
+    if (localStorage.getItem(STORAGE_KEY) === null) localStorage.setItem(STORAGE_KEY, old);
+    localStorage.removeItem(key);
+  }
 }
 
 function load(): LocalState {
   try {
-    migrateLegacyKey();
+    migrateLegacyKeys();
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return { savedAffirmations: [], ...JSON.parse(raw) } as LocalState;
   } catch {

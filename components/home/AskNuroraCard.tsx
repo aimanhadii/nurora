@@ -12,7 +12,7 @@ import { Orb } from "@/components/ui/Orb";
 import { QuickChips } from "@/components/chat/QuickChips";
 
 /** A compact chat box; sending continues the conversation in Chat. */
-export function AskIlmoraCard({ className }: { className?: string }) {
+export function AskNuroraCard({ className }: { className?: string }) {
   const router = useRouter();
   const [text, setText] = useState("");
 
@@ -32,16 +32,16 @@ export function AskIlmoraCard({ className }: { className?: string }) {
       <CardHeader>
         <CardTitle>
           <Orb size={16} />
-          Ask Ilmora
+          Ask Nurora
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <form onSubmit={handleSubmit} className="relative">
-          <label htmlFor="ask-ilmora" className="sr-only">
-            Ask Ilmora
+          <label htmlFor="ask-nurora" className="sr-only">
+            Ask Nurora
           </label>
           <Input
-            id="ask-ilmora"
+            id="ask-nurora"
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="esok 3pm meeting, or ask anything…"
@@ -54,7 +54,7 @@ export function AskIlmoraCard({ className }: { className?: string }) {
             size="icon-sm"
             variant={text.trim() ? "default" : "ghost"}
             disabled={!text.trim()}
-            aria-label="Send to Ilmora"
+            aria-label="Send to Nurora"
             className={cn("absolute top-1/2 right-2 -translate-y-1/2")}
           >
             <ArrowUp strokeWidth={1.5} />

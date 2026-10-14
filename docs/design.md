@@ -1,4 +1,4 @@
-# Ilmora design spec
+# Nurora design spec
 
 The rules every screen follows. If a component needs something not listed
 here, change this file first.
@@ -58,7 +58,7 @@ Three families, all self-hosted via `next/font`:
   on (opsz follows size), -0.015em, never italic. Used sparingly for: the
   greeting / page titles, the Next up task title, the affirmation,
   empty-state and chat-welcome headings, dialog titles, and the lowercase
-  **ilmora** wordmark.
+  **nurora** wordmark.
 - **Geist Sans**: everything else — navigation, buttons, labels, rows,
   chips, inputs, chat bubbles, metadata.
 - **Geist Mono** with `tabular-nums`: small time chips only ("4:00 pm").
@@ -133,7 +133,7 @@ Rules:
 
 - **Home:** greeting (Fraunces 32/400), date + summary line, then bento grid:
   Next up (2 cols) · Progress ring + streak · Affirmation · Today list
-  (2 cols, 2 rows) · This week · Ask Ilmora (full width on desktop).
+  (2 cols, 2 rows) · This week · Ask Nurora (full width on desktop).
 - **Chat:** single 720px column for header, messages and composer.
   Messages grouped by sender (8px inside a group, 20px between groups;
   avatar + time once per group). Composer is in normal flow under the

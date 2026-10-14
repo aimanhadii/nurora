@@ -1,6 +1,8 @@
-# Ilmora
+# Nurora
 
-Your AI daily companion. Chat in English or Malay, and Ilmora keeps track of
+A little light for your day.
+
+Your AI daily companion. Chat in English or Malay, and Nurora keeps track of
 your tasks, sends a morning brief and an evening check-in, and reminds you
 when things are due. There's also a plain task list that works without AI.
 

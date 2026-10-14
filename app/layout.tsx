@@ -24,8 +24,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Ilmora", template: "%s · Ilmora" },
-  description: "Your AI daily companion.",
+  title: { default: "Nurora", template: "%s · Nurora" },
+  description: "A little light for your day.",
 };
 
 export const viewport: Viewport = {

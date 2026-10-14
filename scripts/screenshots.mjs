@@ -23,7 +23,7 @@ const THEMES = ["light", "dark"];
 
 // A short conversation for the chat screenshots.
 const CONVERSATION = `(() => {
-  const s = JSON.parse(localStorage.getItem('ilmora:v3'));
+  const s = JSON.parse(localStorage.getItem('nurora:v3'));
   const t = Date.now();
   const at = (minAgo) => new Date(t - minAgo * 60000).toISOString();
   s.messages = [
@@ -34,12 +34,12 @@ const CONVERSATION = `(() => {
     { id: 'c5', role: 'user', content: 'and esok 9.30 dentist', createdAt: at(10) },
     { id: 'c6', role: 'assistant', content: 'Done! Dentist tomorrow at 9:30 am is on your list. Good luck with the review 💪', createdAt: at(9) },
   ];
-  localStorage.setItem('ilmora:v3', JSON.stringify(s));
+  localStorage.setItem('nurora:v3', JSON.stringify(s));
 })()`;
 
 const SCREENS = [
   { name: "home", path: "/home", tall: true },
-  { name: "chat-empty", path: "/chat", setup: "(() => { const s = JSON.parse(localStorage.getItem('ilmora:v3')); s.messages = []; localStorage.setItem('ilmora:v3', JSON.stringify(s)); })()" },
+  { name: "chat-empty", path: "/chat", setup: "(() => { const s = JSON.parse(localStorage.getItem('nurora:v3')); s.messages = []; localStorage.setItem('nurora:v3', JSON.stringify(s)); })()" },
   { name: "chat", path: "/chat", setup: CONVERSATION },
   { name: "tasks-today", path: "/tasks" },
   { name: "tasks-upcoming", path: "/tasks", action: async (p) => p.getByRole("tab", { name: /Upcoming/ }).click() },
@@ -92,8 +92,8 @@ for (const theme of THEMES) {
         reducedMotion: "reduce",
       });
       await context.addInitScript((t) => {
-        if (t === "dark") localStorage.setItem("ilmora:theme", "dark");
-        else localStorage.removeItem("ilmora:theme");
+        if (t === "dark") localStorage.setItem("nurora:theme", "dark");
+        else localStorage.removeItem("nurora:theme");
         // Hide the Next.js dev-tools badge/overlay: it's dev-only, covers
         // controls in the corners, and shouldn't appear in design shots.
         document.addEventListener("DOMContentLoaded", () => {
@@ -152,10 +152,10 @@ const rows = SCREENS.filter((s) => !ONLY || s.name.startsWith(ONLY))
 
 writeFileSync(
   `${OUT}/index.html`,
-  `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Ilmora screenshots</title>
+  `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Nurora screenshots</title>
 <style>body{font:14px system-ui;margin:24px;background:#f4f4f6;color:#111}h2{font-size:16px;margin:32px 0 12px}
 .row{display:flex;gap:16px;overflow-x:auto;align-items:flex-start}figure{margin:0;flex:none}
 img{height:420px;border-radius:8px;border:1px solid #ddd;background:#fff}figcaption{margin-top:6px;color:#666}</style>
-<h1>Ilmora · ${new Date().toLocaleString()}</h1>${rows}`,
+<h1>Nurora · ${new Date().toLocaleString()}</h1>${rows}`,
 );
 console.log(`\n${results.length} screenshots → ${OUT}/index.html`);
