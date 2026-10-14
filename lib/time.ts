@@ -55,6 +55,16 @@ export function localToUtcIso(
   return new Date(guess.getTime() - offsetMs(guess, timeZone)).toISOString();
 }
 
+/** "15:00" (24h, for form inputs) in the user's timezone. */
+export function timeKey(iso: string, timeZone = DEFAULT_TIMEZONE): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date(iso));
+}
+
 /** "3:00 PM" in the user's timezone. */
 export function formatTime(iso: string, timeZone = DEFAULT_TIMEZONE): string {
   return new Intl.DateTimeFormat("en-MY", {

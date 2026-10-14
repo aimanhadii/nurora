@@ -25,14 +25,16 @@ export function TaskSection({
         aria-expanded={open}
         aria-controls={contentId}
         onClick={() => setOpen(!open)}
-        className="flex h-11 w-full items-center gap-1.5 rounded-lg text-left text-sm font-semibold"
+        className="flex h-11 w-full items-center gap-2 rounded-full px-1 text-left text-base font-semibold"
       >
         <ChevronRight
-          className={`size-4 text-muted transition-transform duration-200 ${open ? "rotate-90" : ""}`}
+          className={`size-4 text-fg-3 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
           strokeWidth={2}
         />
         {title}
-        <span className="font-normal text-muted tabular-nums">{count}</span>
+        <span className="rounded-full bg-white/8 px-2 py-0.5 text-xs font-medium text-fg-2 tabular-nums">
+          {count}
+        </span>
       </button>
 
       {/* Animating grid rows 0fr → 1fr is a CSS trick for "height: auto". */}

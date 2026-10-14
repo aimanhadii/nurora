@@ -7,7 +7,7 @@ import { formatLongDate } from "@/lib/time";
 import type { Task } from "@/lib/types";
 import { useNow } from "@/lib/use-now";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { AddTaskButton } from "./AddTaskSheet";
+import { AddTaskButton } from "./TaskSheet";
 import { ProgressSummary } from "./ProgressSummary";
 import { TaskItem } from "./TaskItem";
 import { TaskSection } from "./TaskSection";
@@ -15,13 +15,13 @@ import { TaskSection } from "./TaskSection";
 function EmptyState() {
   return (
     <div className="flex animate-fade-in flex-col items-center px-6 py-16 text-center">
-      <div className="flex size-14 items-center justify-center rounded-2xl bg-surface-2 text-muted">
-        <CircleCheckBig className="size-7" strokeWidth={1.5} />
+      <div className="glass-flat flex size-16 items-center justify-center rounded-[22px] text-accent-2">
+        <CircleCheckBig className="size-8" strokeWidth={1.5} />
       </div>
-      <h2 className="mt-5 text-lg font-semibold tracking-tight">
+      <h2 className="mt-6 text-xl font-semibold tracking-tight">
         Your list is clear
       </h2>
-      <p className="mt-1.5 max-w-xs text-[15px] text-muted">
+      <p className="mt-2 max-w-xs text-[15px] text-fg-2">
         Add something you want to get done, or just tell Teman in chat.
       </p>
       <div className="mt-6 w-48">
@@ -53,7 +53,7 @@ function TaskSections({ tasks, now }: { tasks: Task[]; now: Date }) {
 
       <TaskSection title="Today" count={today.length}>
         {today.length === 0 ? (
-          <p className="px-1 py-3 text-sm text-muted">
+          <p className="px-1 py-3 text-sm text-fg-2">
             Nothing left for today. Enjoy it ✨
           </p>
         ) : (
@@ -88,18 +88,20 @@ export function TasksScreen() {
 
   return (
     <div className="h-full overflow-y-auto overscroll-contain">
-      <PageHeader
-        title="Tasks"
-        subtitle={
-          <span className={now ? "" : "invisible"}>
-            {now ? formatLongDate(now) : "Today"}
-          </span>
-        }
-        actions={<AddTaskButton variant="header" />}
-      />
+      <div className="mx-auto max-w-[720px] px-3 md:px-2">
+        <PageHeader
+          title="Tasks"
+          subtitle={
+            <span className={now ? "" : "invisible"}>
+              {now ? formatLongDate(now) : "Today"}
+            </span>
+          }
+          actions={<AddTaskButton variant="header" />}
+        />
 
-      <div className="mx-auto max-w-2xl space-y-4 px-4 pt-5 pb-[calc(var(--nav-h)+6rem)] md:px-8 md:pb-10">
-        {data && now && <TaskSections tasks={data.tasks} now={now} />}
+        <div className="space-y-4 pt-4 pb-[calc(var(--nav-h)+6rem)] md:pb-6">
+          {data && now && <TaskSections tasks={data.tasks} now={now} />}
+        </div>
       </div>
 
       <AddTaskButton variant="fab" />

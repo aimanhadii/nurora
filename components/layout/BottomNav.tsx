@@ -2,18 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 import { NAV_ITEMS } from "./nav-items";
 
-/** Glass tab bar for phones. Floats over the content so it can blur it. */
+/** Floating glass tab bar for phones. Hidden while the keyboard is open. */
 export function BottomNav() {
   const pathname = usePathname();
 
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/75 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl backdrop-saturate-150 md:hidden"
+      className="bottom-nav pointer-events-none fixed inset-x-0 bottom-0 z-30 flex justify-center px-6 pb-[max(env(safe-area-inset-bottom),0.75rem)] md:hidden"
     >
-      <ul className="flex h-14">
+      <GlassPanel
+        as="ul"
+        className="pointer-events-auto flex h-16 w-full max-w-72 gap-1 rounded-full p-1.5"
+      >
         {NAV_ITEMS.map(({ href, label, Icon }) => {
           const active = pathname.startsWith(href);
           return (
@@ -21,12 +25,12 @@ export function BottomNav() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex h-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors active:scale-95 ${
-                  active ? "text-fg" : "text-subtle"
+                className={`flex h-full flex-col items-center justify-center gap-0.5 rounded-full text-[11px] font-medium transition active:scale-95 ${
+                  active ? "bg-glass-hover text-fg" : "text-fg-3"
                 }`}
               >
                 <Icon
-                  className="size-[22px]"
+                  className={`size-[22px] ${active ? "text-accent" : ""}`}
                   strokeWidth={active ? 2 : 1.6}
                 />
                 {label}
@@ -34,7 +38,7 @@ export function BottomNav() {
             </li>
           );
         })}
-      </ul>
+      </GlassPanel>
     </nav>
   );
 }

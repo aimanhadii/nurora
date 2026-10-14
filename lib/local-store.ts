@@ -2,7 +2,7 @@
 // Slice 2 replaces this with Supabase.
 
 import { useSyncExternalStore } from "react";
-import { dateKeyInDays, localToUtcIso } from "./time";
+import { dateKeyInDays, localToUtcIso, timeKey } from "./time";
 import type { Message, NewTaskInput, Task } from "./types";
 
 type LocalState = {
@@ -104,19 +104,63 @@ export function useLocalData(): LocalState | null {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
+function schedule(input: NewTaskInput): Pick<Task, "dueAt" | "allDay"> {
+  return {
+    dueAt: input.date ? localToUtcIso(input.date, input.time) : null,
+    allDay: Boolean(input.date && !input.time),
+  };
+}
+
 export function addTask(input: NewTaskInput) {
   const title = input.title.trim();
   if (!title) return;
   const task: Task = {
     id: newId(),
     title,
-    dueAt: input.date ? localToUtcIso(input.date, input.time) : null,
-    allDay: Boolean(input.date && !input.time),
+    ...schedule(input),
     status: "pending",
     completedAt: null,
     createdAt: new Date().toISOString(),
   };
   update((s) => ({ ...s, tasks: [...s.tasks, task] }));
+}
+
+export function updateTask(id: string, input: NewTaskInput) {
+  const title = input.title.trim();
+  if (!title) return;
+  update((s) => ({
+    ...s,
+    tasks: s.tasks.map((t) =>
+      t.id === id ? { ...t, title, ...schedule(input) } : t,
+    ),
+  }));
+}
+
+/** Moves a task to tomorrow, keeping its time of day. */
+export function moveTaskToTomorrow(id: string) {
+  const tomorrow = dateKeyInDays(new Date(), 1);
+  update((s) => ({
+    ...s,
+    tasks: s.tasks.map((t) => {
+      if (t.id !== id) return t;
+      const time = t.dueAt && !t.allDay ? timeKey(t.dueAt) : undefined;
+      return {
+        ...t,
+        ...schedule({ title: t.title, date: tomorrow, time }),
+        status: "pending",
+        completedAt: null,
+      };
+    }),
+  }));
+}
+
+/** Puts a deleted task back (for "Undo"). */
+export function restoreTask(task: Task) {
+  update((s) =>
+    s.tasks.some((t) => t.id === task.id)
+      ? s
+      : { ...s, tasks: [...s.tasks, task] },
+  );
 }
 
 export function toggleTask(id: string) {
@@ -144,6 +188,24 @@ export function addMessage(role: Message["role"], content: string) {
     createdAt: new Date().toISOString(),
   };
   update((s) => ({ ...s, messages: [...s.messages, message] }));
+}
+
+export function deleteMessage(id: string) {
+  update((s) => ({ ...s, messages: s.messages.filter((m) => m.id !== id) }));
+}
+
+/** Puts a deleted message back in its original place (for "Undo"). */
+export function restoreMessage(message: Message) {
+  update((s) =>
+    s.messages.some((m) => m.id === message.id)
+      ? s
+      : {
+          ...s,
+          messages: [...s.messages, message].sort((a, b) =>
+            a.createdAt.localeCompare(b.createdAt),
+          ),
+        },
+  );
 }
 
 export function resetLocalData() {

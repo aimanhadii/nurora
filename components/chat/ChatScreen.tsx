@@ -51,7 +51,7 @@ export function ChatScreen() {
 
   return (
     <div ref={scrollRef} className="h-full overflow-y-auto overscroll-contain">
-      <div className="flex min-h-full flex-col">
+      <div className="mx-auto flex min-h-full max-w-[720px] flex-col px-3 md:px-2">
         <PageHeader
           title={
             // Hidden until the browser knows the real time, so the server
@@ -67,34 +67,31 @@ export function ChatScreen() {
           }
         />
 
-        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 md:px-8">
-          {data && messages.length === 0 ? (
-            <ChatWelcome name={name} />
-          ) : (
-            <div
-              role="log"
-              aria-live="polite"
-              aria-label="Conversation"
-              className="flex-1 space-y-4 py-6"
-            >
-              {messages.map((m, i) => (
-                <MessageBubble
-                  key={m.id}
-                  message={m}
-                  animate={i === messages.length - 1}
-                />
-              ))}
-              {typing && <TypingIndicator />}
-            </div>
-          )}
-        </div>
-
-        {/* Composer sticks to the bottom; its padding sits under the tab bar. */}
-        <div className="sticky bottom-0 z-10 bg-bg/80 pt-2 pb-[calc(var(--nav-h)+0.75rem)] backdrop-blur-xl backdrop-saturate-150 md:pb-6">
-          <div className="mx-auto max-w-2xl px-4 md:px-8">
-            <QuickReplies onPick={handleSend} disabled={!data || typing} />
-            <ChatInput onSend={handleSend} disabled={!data || typing} />
+        {data && messages.length === 0 ? (
+          <ChatWelcome name={name} />
+        ) : (
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Conversation"
+            className="flex-1 space-y-4 px-1 py-6"
+          >
+            {messages.map((m, i) => (
+              <MessageBubble
+                key={m.id}
+                message={m}
+                animate={i === messages.length - 1}
+              />
+            ))}
+            {typing && <TypingIndicator />}
           </div>
+        )}
+
+        {/* Composer sticks to the bottom, above the floating tab bar. The
+            fade keeps chips readable over messages scrolling underneath. */}
+        <div className="sticky bottom-0 z-10 -mx-3 bg-linear-to-t from-bg/90 from-40% to-transparent px-3 pt-6 pb-[calc(var(--nav-h)+0.5rem)] md:mx-0 md:px-0 md:pb-0">
+          <QuickReplies onPick={handleSend} disabled={!data || typing} />
+          <ChatInput onSend={handleSend} disabled={!data || typing} />
         </div>
       </div>
     </div>

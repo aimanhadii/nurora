@@ -1,15 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
-import { deleteTask, toggleTask } from "@/lib/local-store";
+import { CalendarClock, MoreHorizontal, Pencil, Share, Trash2 } from "lucide-react";
+import {
+  deleteTask,
+  moveTaskToTomorrow,
+  restoreTask,
+  toggleTask,
+} from "@/lib/local-store";
+import { shareText } from "@/lib/share";
 import { isOverdue } from "@/lib/tasks/group";
 import { formatDay, formatTime } from "@/lib/time";
+import { showToast } from "@/lib/toast";
 import type { Task } from "@/lib/types";
+import { ContextMenu, useContextMenu, type MenuItem } from "@/components/ui/ContextMenu";
+import { GlassPanel } from "@/components/ui/GlassPanel";
 import { TaskCheckbox } from "./TaskCheckbox";
+import { TaskSheet } from "./TaskSheet";
 
 // Long enough to see the check animation before the task moves to "Done".
-const COMPLETE_DELAY_MS = 450;
+const COMPLETE_DELAY_MS = 500;
 
 function timeLabel(task: Task, now: Date): string | null {
   if (!task.dueAt) return null;
@@ -21,6 +31,9 @@ function timeLabel(task: Task, now: Date): string | null {
 
 export function TaskItem({ task, now }: { task: Task; now: Date }) {
   const [completing, setCompleting] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const menu = useContextMenu();
+
   const done = task.status === "done" || completing;
   const overdue = !done && isOverdue(task, now);
   const label = timeLabel(task, now);
@@ -31,11 +44,38 @@ export function TaskItem({ task, now }: { task: Task; now: Date }) {
     setTimeout(() => toggleTask(task.id), COMPLETE_DELAY_MS);
   }
 
+  const items: MenuItem[] = [
+    { label: "Edit", Icon: Pencil, onSelect: () => setEditing(true) },
+    {
+      label: "Share",
+      Icon: Share,
+      onSelect: () => shareText(label ? `${task.title} — ${label}` : task.title),
+    },
+    {
+      label: "Move to tomorrow",
+      Icon: CalendarClock,
+      onSelect: () => {
+        moveTaskToTomorrow(task.id);
+        showToast("Moved to tomorrow");
+      },
+    },
+    {
+      label: "Delete",
+      Icon: Trash2,
+      destructive: true,
+      onSelect: () => {
+        deleteTask(task.id);
+        showToast("Task deleted", { label: "Undo", run: () => restoreTask(task) });
+      },
+    },
+  ];
+
   return (
-    <li
-      className={`group @container flex min-h-14 items-center gap-3 rounded-2xl border px-4 py-2 transition-colors ${
-        overdue ? "border-danger/25 bg-danger/[0.04]" : "border-line bg-surface"
-      }`}
+    <GlassPanel
+      as="li"
+      strength="flat"
+      {...menu.targetProps}
+      className="long-press @container flex min-h-14 items-center gap-3 rounded-item py-1.5 pr-1 pl-4"
     >
       <TaskCheckbox
         checked={done}
@@ -48,7 +88,7 @@ export function TaskItem({ task, now }: { task: Task; now: Date }) {
       <div className="flex min-w-0 flex-1 flex-col items-start gap-1 py-1 @md:flex-row @md:items-center @md:gap-3">
         <p
           className={`w-full min-w-0 truncate text-[15px] transition-colors duration-300 @md:flex-1 ${
-            done ? "text-subtle line-through" : ""
+            done ? "text-fg-3 line-through decoration-white/30" : ""
           }`}
         >
           {task.title}
@@ -57,7 +97,9 @@ export function TaskItem({ task, now }: { task: Task; now: Date }) {
         {label && (
           <span
             className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium tabular-nums ${
-              overdue ? "bg-danger/10 text-danger" : "bg-surface-2 text-muted"
+              overdue
+                ? "bg-danger/15 text-danger-soft"
+                : "bg-white/8 text-fg-2"
             }`}
           >
             {overdue && <span className="sr-only">Overdue: </span>}
@@ -68,14 +110,20 @@ export function TaskItem({ task, now }: { task: Task; now: Date }) {
 
       <button
         type="button"
-        onClick={() => {
-          if (confirm(`Delete “${task.title}”?`)) deleteTask(task.id);
-        }}
-        aria-label={`Delete ${task.title}`}
-        className="-mr-2 flex size-11 shrink-0 items-center justify-center rounded-full text-subtle transition hover:text-danger focus-visible:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+        {...menu.buttonProps}
+        aria-label={`Options for ${task.title}`}
+        className="flex size-11 shrink-0 items-center justify-center rounded-full text-fg-3 transition hover:bg-glass-hover hover:text-fg"
       >
-        <Trash2 className="size-[18px]" strokeWidth={1.75} />
+        <MoreHorizontal className="size-5" strokeWidth={1.75} />
       </button>
-    </li>
+
+      <ContextMenu
+        position={menu.position}
+        items={items}
+        label={`Options for ${task.title}`}
+        onClose={menu.close}
+      />
+      {editing && <TaskSheet task={task} onClose={() => setEditing(false)} />}
+    </GlassPanel>
   );
 }
