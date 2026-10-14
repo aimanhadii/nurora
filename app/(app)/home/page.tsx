@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { HomeScreen } from "@/components/home/HomeScreen";
 
-export const metadata: Metadata = { title: "Home · Teman" };
+export const metadata: Metadata = { title: "Home" };
 
 export default function HomePage() {
   return (

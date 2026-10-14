@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { TasksScreen } from "@/components/tasks/TasksScreen";
 
-export const metadata: Metadata = { title: "Tasks · Teman" };
+export const metadata: Metadata = { title: "Tasks" };
 
 export default function TasksPage() {
   return (

@@ -68,7 +68,7 @@ export function ChatScreen() {
         <div className={`${COLUMN} flex items-center gap-3 py-3 md:py-5`}>
           <Orb size={32} />
           <div className="min-w-0 flex-1">
-            <h1 className="text-base font-semibold">Teman</h1>
+            <h1 className="font-display text-xl font-semibold">ilmora</h1>
             <p className="truncate text-meta text-muted-foreground">
               {now ? formatLongDate(now) : " "}
             </p>

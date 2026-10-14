@@ -137,6 +137,7 @@
 
   --font-sans: var(--font-geist-sans);
   --font-heading: var(--font-geist-sans);
+  --font-serif: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 
   /* Two elevations only: cards and popovers. */
@@ -153,17 +154,19 @@
   --text-xs: 12px;
   --text-xs--line-height: 16px;
   --text-meta: 13px;
-  --text-meta--line-height: 18px;
+  --text-meta--line-height: 20px;
   --text-sm: 14px;
-  --text-sm--line-height: 20px;
+  --text-sm--line-height: 21px; /* 1.5 */
   --text-base: 16px;
   --text-base--line-height: 24px;
   --text-xl: 20px;
   --text-xl--line-height: 28px;
   --text-2xl: 24px;
   --text-2xl--line-height: 32px;
-  --text-3xl: 32px;
-  --text-3xl--line-height: 40px;
+  --text-3xl: 30px;
+  --text-3xl--line-height: 36px;
+  --text-4xl: 40px;
+  --text-4xl--line-height: 48px;
 
   /* Radius: 8 controls, 12 inputs/rows, 16 cards, full pills. */
   --radius-sm: 8px;
@@ -212,7 +215,7 @@
 }
 
 /* =====================================================================
-   Teman's orb: layered radial gradients that slowly morph.
+   Ilmora's orb: layered radial gradients that slowly morph.
    ===================================================================== */
 
 .orb {
@@ -356,6 +359,16 @@
   &::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Display serif (Fraunces) for a few warm moments: greeting, hero titles,
+   the affirmation, empty-state headings and the wordmark. SOFT rounds the
+   serifs; optical sizing adapts letter shapes to each size. */
+@utility font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings: "SOFT" 80;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
 }
 
 /* Horizontal scrollers fade out at both edges. */

@@ -39,7 +39,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {
     <h2
       data-slot="card-title"
       className={cn(
-        "flex items-center gap-2 text-sm font-medium tracking-normal text-muted-foreground",
+        "flex items-center gap-2 text-meta font-medium tracking-normal text-muted-foreground",
         className
       )}
       {...props}

@@ -6,12 +6,21 @@ import { usePathname } from "next/navigation";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useLocalData } from "@/lib/local-store";
 import { taskTimeLabel } from "@/lib/tasks/format";
-import { countdown, lastSevenDays, nextUpTask, streakDays } from "@/lib/tasks/stats";
+import {
+  countdown,
+  lastSevenDays,
+  nextUpTask,
+  streakDays,
+} from "@/lib/tasks/stats";
 import { useNow } from "@/lib/use-now";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Orb } from "@/components/ui/Orb";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { NAV_ITEMS } from "./nav-items";
 import { ProfileMenu } from "./ProfileMenu";
 
@@ -57,17 +66,30 @@ export function Sidebar() {
   );
 }
 
-function ExpandedSidebar({ className, onCollapse }: { className: string; onCollapse: () => void }) {
+function ExpandedSidebar({
+  className,
+  onCollapse,
+}: {
+  className: string;
+  onCollapse: () => void;
+}) {
   const pathname = usePathname();
 
   return (
     <div className={cn("h-full flex-col gap-6 p-4", className)}>
       <div className="flex items-center gap-3 pl-1">
         <Orb size={28} />
-        <span className="flex-1 text-base font-semibold tracking-tight">teman</span>
+        <span className="flex-1 font-display text-xl font-semibold">
+          ilmora
+        </span>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon-sm" onClick={onCollapse} aria-label="Collapse sidebar">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={onCollapse}
+              aria-label="Collapse sidebar"
+            >
               <PanelLeftClose strokeWidth={1.5} />
             </Button>
           </TooltipTrigger>
@@ -116,8 +138,12 @@ function startsIn(dueAt: string, now: Date): string {
 /** "Next up" mini card + streak, so the sidebar earns its space. */
 function SidebarInsights() {
   const data = useLocalData();
-  const now = useNow(1000);
+  const now = useNow(15_000);
+  const pathname = usePathname();
   if (!data || !now) return null;
+
+  // Home already shows a big Next up card; don't repeat it here.
+  const showNextUp = !pathname.startsWith("/home");
 
   const next = nextUpTask(data.tasks, now);
   const streak = streakDays(data.tasks, now);
@@ -125,24 +151,35 @@ function SidebarInsights() {
 
   return (
     <div className="space-y-3 rounded-xl border bg-card p-3">
-      <Link
-        href="/tasks"
-        className="block rounded-lg p-1 outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/40"
-      >
-        <p className="text-xs font-medium text-muted-foreground">Next up</p>
-        {next ? (
-          <>
-            <p className="mt-1 truncate text-sm font-medium">{next.title}</p>
-            <p className="mt-1 flex items-center justify-between gap-2 font-mono text-xs tabular-nums text-muted-foreground">
-              <span className="truncate">{taskTimeLabel(next, now)}</span>
-              <span className="shrink-0 text-brand">{startsIn(next.dueAt!, now)}</span>
+      {showNextUp && (
+        <Link
+          href="/tasks"
+          className="block rounded-lg p-1 outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/40"
+        >
+          <p className="text-xs font-medium text-muted-foreground">Next up</p>
+          {next ? (
+            <>
+              <p className="mt-1 truncate text-sm font-medium">{next.title}</p>
+              <p className="mt-1 flex items-center justify-between gap-2 font-mono text-xs tabular-nums text-muted-foreground">
+                <span className="truncate">{taskTimeLabel(next, now)}</span>
+                <span className="shrink-0 text-brand">
+                  {startsIn(next.dueAt!, now)}
+                </span>
+              </p>
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Nothing scheduled
             </p>
-          </>
-        ) : (
-          <p className="mt-1 text-sm text-muted-foreground">Nothing scheduled</p>
+          )}
+        </Link>
+      )}
+      <div
+        className={cn(
+          "flex items-center justify-between gap-2 px-1",
+          showNextUp && "border-t pt-3",
         )}
-      </Link>
-      <div className="flex items-center justify-between gap-2 border-t px-1 pt-3">
+      >
         <p className="text-meta font-medium whitespace-nowrap">
           <span aria-hidden="true">🔥 </span>
           {streak}-day streak
@@ -151,7 +188,10 @@ function SidebarInsights() {
           {week.map((d) => (
             <span
               key={d.key}
-              className={cn("size-1.5 rounded-full", d.count > 0 ? "bg-brand" : "bg-foreground/15")}
+              className={cn(
+                "size-1.5 rounded-full",
+                d.count > 0 ? "bg-brand" : "bg-foreground/15",
+              )}
             />
           ))}
         </div>
@@ -160,7 +200,13 @@ function SidebarInsights() {
   );
 }
 
-function CollapsedSidebar({ className, onExpand }: { className: string; onExpand: () => void }) {
+function CollapsedSidebar({
+  className,
+  onExpand,
+}: {
+  className: string;
+  onExpand: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -168,7 +214,12 @@ function CollapsedSidebar({ className, onExpand }: { className: string; onExpand
       <Orb size={28} />
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" onClick={onExpand} aria-label="Expand sidebar">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onExpand}
+            aria-label="Expand sidebar"
+          >
             <PanelLeftOpen strokeWidth={1.5} />
           </Button>
         </TooltipTrigger>

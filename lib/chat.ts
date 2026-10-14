@@ -3,7 +3,7 @@ import { fakeReply } from "./fake-bot";
 import { addMessage, getLocalData } from "./local-store";
 
 // Sending lives here (not inside the chat screen) so other screens, like
-// "Ask Teman" on Home, can send and then navigate to Chat while the reply
+// "Ask Ilmora" on Home, can send and then navigate to Chat while the reply
 // is still being "typed".
 
 let typing = false;

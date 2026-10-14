@@ -1,4 +1,4 @@
-# Teman design spec
+# Ilmora design spec
 
 The rules every screen follows. If a component needs something not listed
 here, change this file first.
@@ -36,28 +36,36 @@ few of our own.
 | `--destructive` | `#dc2626` | `#f87171` | delete |
 | `--danger-soft` / `--danger-soft-foreground` | `#fee2e2` / `#b91c1c` | red 14% / `#fca5a5` | overdue chips |
 | `--glow-1/2/3` | lavender / lilac / pink-violet | deep purples | page background glow |
-| `--orb-1/2/3`, `--orb-glow` | violet / magenta / lavender | same, brighter glow | Teman's orb |
+| `--orb-1/2/3`, `--orb-glow` | violet / magenta / lavender | same, brighter glow | Ilmora's orb |
 
 Colour budget: neutrals for ~90% of pixels. Violet only for primary, active,
 selected, progress and focus. One red, only for destructive and overdue.
 
 ## 2. Type
 
-Geist Sans for UI, Geist Mono (with `tabular-nums`) for times, counts and
-countdowns.
+Three families, all self-hosted via `next/font`:
+
+- **Fraunces** (`font-display`): a warm display serif, SOFT axis 80,
+  optical sizing on, -0.02em. Used sparingly, only for: page greeting /
+  titles, the Next up task title, the affirmation (italic), empty-state
+  and chat-welcome headings, and the lowercase **ilmora** wordmark.
+- **Geist Sans**: everything else — navigation, buttons, labels, rows,
+  chips, inputs, chat bubbles, metadata.
+- **Geist Mono** with `tabular-nums`: times, counts and countdowns.
 
 | Class | Size / line | Use |
 |---|---|---|
 | `text-xs` | 12 / 16 | badges, chip labels, timestamps |
-| `text-meta` | 13 / 18 | descriptions, notes preview, metadata |
-| `text-sm` | 14 / 20 | body UI, list rows, buttons, card labels |
+| `text-meta` | 13 / 20 | muted card labels (500), descriptions, notes, metadata |
+| `text-sm` | 14 / 21 | body UI, list rows, buttons |
 | `text-base` | 16 / 24 | chat messages, inputs (16px stops iOS zoom) |
-| `text-xl` | 20 / 28 | card titles, affirmation |
-| `text-2xl` | 24 / 32 | screen titles (mobile) |
-| `text-3xl` | 32 / 40 | screen greeting / titles (desktop) |
+| `text-xl` | 20 / 28 | wordmark, affirmation (mobile) |
+| `text-2xl` | 24 / 32 | Next up title, affirmation (desktop) |
+| `text-3xl` | 30 / 36 | page greeting / titles (mobile) |
+| `text-4xl` | 40 / 48 | page greeting / titles (desktop) |
 
-Weights: 400 body, 500 labels and controls, 600 headings. No other weights.
-Headings use `tracking-tight` (-0.02em).
+Weights: 400 body, 500 labels, controls and serif display, 600 sans headings
+and the wordmark. No other weights. Headings use -0.02em tracking.
 
 ## 3. Spacing, radius, elevation
 
@@ -98,7 +106,7 @@ Rules:
   opacity), active (`scale-[0.98]` or darker fill), focus-visible
   (3px violet ring at 40%), disabled (50% opacity, no pointer).
 - **Icons:** lucide, 1.5 stroke; 16px in controls, 20px in navigation.
-- **Card header:** 14px/500 muted label left, optional ghost action right,
+- **Card header:** 13px/500 muted label left, optional ghost action right,
   16px gap to content.
 - **Chips / badges:** `rounded-full`, 12px, mono font for times.
 - **Lists:** rows 12px radius, 44px min height, hover fill, divider-free
@@ -112,7 +120,7 @@ Rules:
 
 - **Home:** greeting (32/600), date + summary line, then bento grid:
   Next up (2 cols) · Progress ring + streak · Affirmation · Today list
-  (2 cols, 2 rows) · This week · Ask Teman (full width on desktop).
+  (2 cols, 2 rows) · This week · Ask Ilmora (full width on desktop).
 - **Chat:** single 720px column for header, messages and composer.
   Messages grouped by sender (8px inside a group, 20px between groups;
   avatar + time once per group). Composer is in normal flow under the

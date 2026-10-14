@@ -34,7 +34,7 @@ export function PageHeader({
   return (
     <header className="mb-6 flex items-start gap-3 md:mb-8">
       <div className="min-w-0 flex-1">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
+        <h1 className="font-display text-3xl font-medium md:text-4xl">{title}</h1>
         {description && (
           <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         )}

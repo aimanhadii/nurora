@@ -16,7 +16,7 @@ export function ChatEmpty({
       <Orb size={88} animated />
       <div className="text-center">
         <p className="text-xl text-muted-foreground">Hi, {name}</p>
-        <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
+        <h2 className="mt-1 font-display text-3xl font-medium md:text-4xl">
           How can I help today?
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>

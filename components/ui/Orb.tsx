@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Teman's brand: a soft gradient orb (styles in globals.css).
+ * Ilmora's brand: a soft gradient orb (styles in globals.css).
  * Small orbs are still and glow-free; only the hero and "thinking"
  * orbs animate.
  */
