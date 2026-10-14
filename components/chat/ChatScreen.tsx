@@ -9,7 +9,7 @@ import type { Message } from "@/lib/types";
 import { useNow } from "@/lib/use-now";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Orb } from "@/components/ui/Orb";
-import { ProfileMenu } from "@/components/layout/ProfileMenu";
+import { MobileHeader } from "@/components/layout/MobileHeader";
 import { ChatEmpty } from "./ChatEmpty";
 import { Composer } from "./Composer";
 import { MessageGroup } from "./MessageGroup";
@@ -64,20 +64,11 @@ export function ChatScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="shrink-0 pt-[env(safe-area-inset-top)]">
-        <div className={`${COLUMN} flex items-center gap-3 py-3 md:py-5`}>
-          <Orb size={32} />
-          <div className="min-w-0 flex-1">
-            <h1 className="font-display text-lg">ilmora</h1>
-            <p className="truncate text-meta text-muted-foreground">
-              {now ? formatLongDate(now) : " "}
-            </p>
-          </div>
-          <div className="md:hidden">
-            <ProfileMenu variant="avatar" />
-          </div>
-        </div>
-      </header>
+      <h1 className="sr-only">Chat with Nurora</h1>
+      <MobileHeader
+        subtitle={now ? formatLongDate(now) : " "}
+        rowClassName={`${COLUMN} md:py-5`}
+      />
 
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <div className={`${COLUMN} flex min-h-full flex-col`}>
@@ -86,7 +77,7 @@ export function ChatScreen() {
           ) : empty ? (
             <ChatEmpty
               name={PLACEHOLDER_PROFILE.name}
-              subtitle={now ? `It's ${formatLongDate(now)}. What's on your plate?` : " "}
+              subtitle="A little light for your day."
               onPick={sendChatMessage}
             />
           ) : (

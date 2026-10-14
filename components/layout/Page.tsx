@@ -1,27 +1,29 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { ProfileMenu } from "./ProfileMenu";
+import { MobileHeader } from "./MobileHeader";
 
 /**
  * Scrollable page body: 16 / 24 / 32px side padding, content max 1120px.
- * Bottom padding clears the phone tab bar.
+ * On phones it starts with the shared brand bar (which also handles the
+ * status-bar safe area). Bottom padding clears the phone tab bar.
  */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className="h-full overflow-y-auto overscroll-contain">
       <div
         className={cn(
-          "mx-auto w-full max-w-280 px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-[calc(var(--tabbar-h)+24px)] md:px-6 md:pt-8 md:pb-8 xl:px-8",
+          "mx-auto w-full max-w-280 px-4 pb-[calc(var(--tabbar-h)+24px)] md:px-6 md:pt-8 md:pb-8 xl:px-8",
           className,
         )}
       >
+        <MobileHeader className="mb-2 md:hidden" />
         {children}
       </div>
     </div>
   );
 }
 
-/** Screen title row. On phones the profile/theme menu sits on the right. */
+/** Screen title row (greeting / page title, description, actions). */
 export function PageHeader({
   title,
   description,
@@ -40,9 +42,6 @@ export function PageHeader({
         )}
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
-      <div className="md:hidden">
-        <ProfileMenu variant="avatar" />
-      </div>
     </header>
   );
 }

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Ilmora's brand: a soft gradient orb (styles in globals.css).
+ * Nurora's brand: a soft gradient orb (styles in globals.css).
  * Small orbs are still and glow-free; only the hero and "thinking"
  * orbs animate.
  */

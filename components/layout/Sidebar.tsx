@@ -76,7 +76,7 @@ function ExpandedSidebar({
     <div className={cn("h-full flex-col gap-6 p-4", className)}>
       <div className="flex items-center gap-3 pl-1">
         <Orb size={28} />
-        <span className="flex-1 font-display text-lg">ilmora</span>
+        <span className="flex-1 font-display text-lg">nurora</span>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
