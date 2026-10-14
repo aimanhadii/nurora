@@ -22,18 +22,26 @@ scheduled tasks. Each morning it sends a short brief of your day with an affirma
 for that day, nudges you before things are due, and checks in each evening to roll over
 whatever is left. A plain task list works alongside the chat for anyone who prefers buttons.
 
-<!--
-Screenshots: run `npm run screenshots` (with `npm run dev` running), copy your favourites
-into docs/screenshots/ with these names, then delete this comment and the one below.
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/home-desktop.png" alt="Home dashboard on desktop: next task with countdown, daily progress, affirmation, weekly activity and today's tasks" width="100%">
+</p>
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/home-desktop-light.png" alt="Home on desktop, light theme"></td>
-    <td><img src="docs/screenshots/home-mobile-dark.png" alt="Home on mobile, dark theme" width="260"></td>
-    <td><img src="docs/screenshots/chat-mobile-light.png" alt="Chat on mobile, light theme" width="260"></td>
+    <td align="center" width="33%"><img src="docs/screenshots/home-mobile.png" alt="Home on mobile" width="100%"><br><sub>Home</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/chat-mobile.png" alt="Chat on mobile with history and new chat buttons" width="100%"><br><sub>Chat</sub></td>
+    <td align="center" width="33%"><img src="docs/screenshots/tasks-mobile.png" alt="Tasks on mobile with progress bar" width="100%"><br><sub>Tasks</sub></td>
   </tr>
 </table>
--->
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="docs/screenshots/chat-desktop.png" alt="New chat screen on desktop with suggestion cards and chat history sidebar" width="100%"><br><sub>New chat with history</sub></td>
+    <td align="center" width="50%"><img src="docs/screenshots/tasks-desktop.png" alt="Tasks on desktop with today, upcoming and done tabs" width="100%"><br><sub>Tasks with progress</sub></td>
+  </tr>
+</table>
 
 ## Features
 
