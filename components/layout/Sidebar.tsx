@@ -6,16 +6,13 @@ import { usePathname } from "next/navigation";
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useLocalData } from "@/lib/local-store";
 import { taskTimeLabel } from "@/lib/tasks/format";
-import {
-  countdown,
-  lastSevenDays,
-  nextUpTask,
-  streakDays,
-} from "@/lib/tasks/stats";
+import { lastSevenDays, nextUpTask, streakDays } from "@/lib/tasks/stats";
 import { useNow } from "@/lib/use-now";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Orb } from "@/components/ui/Orb";
+import { Countdown } from "@/components/shared/Countdown";
+import { StreakDots } from "@/components/shared/StreakDots";
 import {
   Tooltip,
   TooltipContent,
@@ -79,9 +76,7 @@ function ExpandedSidebar({
     <div className={cn("h-full flex-col gap-6 p-4", className)}>
       <div className="flex items-center gap-3 pl-1">
         <Orb size={28} />
-        <span className="flex-1 font-display text-xl font-semibold">
-          ilmora
-        </span>
+        <span className="flex-1 font-display text-lg">ilmora</span>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -107,9 +102,9 @@ function ExpandedSidebar({
                   href={href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
+                    "flex h-10 items-center gap-3 rounded-lg px-3 text-sm outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
                     active
-                      ? "bg-brand-soft text-brand"
+                      ? "bg-brand-soft font-medium text-brand-text"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground",
                   )}
                 >
@@ -128,11 +123,6 @@ function ExpandedSidebar({
       </div>
     </div>
   );
-}
-
-function startsIn(dueAt: string, now: Date): string {
-  const left = countdown(dueAt, now);
-  return left === "now" ? "now" : `in ${left}`;
 }
 
 /** "Next up" mini card + streak, so the sidebar earns its space. */
@@ -156,16 +146,20 @@ function SidebarInsights() {
           href="/tasks"
           className="block rounded-lg p-1 outline-none transition-colors hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/40"
         >
-          <p className="text-xs font-medium text-muted-foreground">Next up</p>
+          <p className="text-xs text-muted-foreground">Next up</p>
           {next ? (
             <>
-              <p className="mt-1 truncate text-sm font-medium">{next.title}</p>
-              <p className="mt-1 flex items-center justify-between gap-2 font-mono text-xs tabular-nums text-muted-foreground">
-                <span className="truncate">{taskTimeLabel(next, now)}</span>
-                <span className="shrink-0 text-brand">
-                  {startsIn(next.dueAt!, now)}
+              <p className="mt-1 truncate text-sm">{next.title}</p>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <span className="truncate text-xs tabular-nums text-muted-foreground">
+                  {taskTimeLabel(next, now)}
                 </span>
-              </p>
+                <Countdown
+                  dueAt={next.dueAt!}
+                  now={now}
+                  className="shrink-0 text-xs"
+                />
+              </div>
             </>
           ) : (
             <p className="mt-1 text-sm text-muted-foreground">
@@ -180,21 +174,11 @@ function SidebarInsights() {
           showNextUp && "border-t pt-3",
         )}
       >
-        <p className="text-meta font-medium whitespace-nowrap">
-          <span aria-hidden="true">🔥 </span>
-          {streak}-day streak
+        <p className="text-meta whitespace-nowrap text-muted-foreground">
+          <span className="text-foreground tabular-nums">{streak}-day</span>{" "}
+          streak
         </p>
-        <div className="flex shrink-0 gap-1" aria-hidden="true">
-          {week.map((d) => (
-            <span
-              key={d.key}
-              className={cn(
-                "size-1.5 rounded-full",
-                d.count > 0 ? "bg-brand" : "bg-foreground/15",
-              )}
-            />
-          ))}
-        </div>
+        <StreakDots week={week} size="sm" />
       </div>
     </div>
   );
@@ -241,7 +225,7 @@ function CollapsedSidebar({
                       className={cn(
                         "flex size-10 items-center justify-center rounded-lg outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/40",
                         active
-                          ? "bg-brand-soft text-brand"
+                          ? "bg-brand-soft text-brand-text"
                           : "text-muted-foreground hover:bg-accent hover:text-foreground",
                       )}
                     >

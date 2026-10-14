@@ -67,7 +67,7 @@ export function TaskRow({
         <div className="w-full min-w-0 @lg:flex-1">
           <p
             className={cn(
-              "truncate text-sm font-medium transition-colors duration-300",
+              "truncate text-sm transition-colors duration-300",
               done && "text-muted-foreground line-through",
             )}
           >
@@ -80,7 +80,7 @@ export function TaskRow({
 
         {label && (
           <Badge
-            variant={overdue ? "danger" : "secondary"}
+            variant={overdue ? "warning" : "brand"}
             className="font-mono tabular-nums"
           >
             {overdue && <span className="sr-only">Overdue: </span>}

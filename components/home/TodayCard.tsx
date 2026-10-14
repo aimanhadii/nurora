@@ -31,7 +31,7 @@ export function TodayCard({
         <CardTitle>
           <ListChecks className="size-4" strokeWidth={1.5} />
           Today
-          <Badge variant="secondary" className="font-mono tabular-nums">
+          <Badge variant="secondary" className="tabular-nums">
             {open.length}
           </Badge>
         </CardTitle>

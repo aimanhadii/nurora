@@ -11,44 +11,60 @@
    ===================================================================== */
 
 :root {
-  --background: #fafafc;
-  --foreground: #0b0b0f;
+  /* Neutrals: the app is almost monochrome. */
+  --background: #fafaf9;
+  --foreground: #111318;
   --card: #ffffff;
-  --card-foreground: #0b0b0f;
+  --card-foreground: #111318;
   --popover: #ffffff;
-  --popover-foreground: #0b0b0f;
-  --primary: #0b0b0f;
+  --popover-foreground: #111318;
+  --primary: #111318;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f6;
-  --secondary-foreground: #0b0b0f;
-  --muted: #f4f4f6;
-  --muted-foreground: #6b7280;
-  --subtle-foreground: #8b8f98;
-  --accent: #f1f0f5;
-  --accent-foreground: #0b0b0f;
+  --secondary: #f2f3f4;
+  --secondary-foreground: #111318;
+  --muted: #f2f3f4;
+  --muted-foreground: #5b6170; /* text-secondary */
+  --subtle-foreground: #9aa0ac; /* hints */
+  --accent: #f1f2f3; /* shadcn's neutral hover fill, not the brand accent */
+  --accent-foreground: #111318;
   --destructive: #dc2626;
-  --border: rgb(0 0 0 / 7%);
-  --input: rgb(0 0 0 / 10%);
-  --ring: #7c3aed;
+  --border: rgb(17 19 24 / 7%);
+  --input: rgb(17 19 24 / 12%);
+  --ring: #0e8a78;
 
-  --brand: #7c3aed;
+  /* Solid accent (teal): small details that need one colour. Use
+     brand-text for *text* — brand itself is 4.3:1 on white, under AA. */
+  --brand: #0e8a78;
+  --brand-hover: #0b7465;
   --brand-foreground: #ffffff;
-  --brand-soft: rgb(124 58 237 / 10%);
-  --danger-soft: #fee2e2;
-  --danger-soft-foreground: #b91c1c;
-  --scrim: rgb(17 12 46 / 24%);
+  --brand-soft: #e2f6f1;
+  --brand-text: #0b5e52;
 
-  --shadow-card: 0 1px 2px rgb(17 12 46 / 4%), 0 8px 24px rgb(17 12 46 / 5%);
-  --shadow-popover: 0 4px 12px rgb(17 12 46 / 8%), 0 16px 40px rgb(17 12 46 / 12%);
+  /* Status */
+  --warning-soft: #fef3c7;
+  --warning-soft-foreground: #92400e;
+  --scrim: rgb(17 19 24 / 32%);
 
-  --glow-1: #ede9fe;
-  --glow-2: #ddd6fe;
-  --glow-3: #f5d0fe;
+  /* Aurora: the signature gradient. Only for the orb, progress, the top
+     glow and the streak. */
+  --aurora-1: #5eead4; /* mint */
+  --aurora-2: #22b8cf; /* teal */
+  --aurora-3: #f0a6ca; /* pink */
+  --aurora: linear-gradient(90deg, var(--aurora-1) 0%, var(--aurora-2) 55%, var(--aurora-3) 100%);
+  --aurora-glow: 0 0 0 0 transparent;
 
-  --orb-1: #8b5cf6;
-  --orb-2: #d946ef;
-  --orb-3: #c4b5fd;
-  --orb-glow: 0 8px 32px -8px rgb(139 92 246 / 45%);
+  /* Top-of-page glow (components/layout/GlowBackground.tsx) */
+  --glow-a: rgb(94 234 212 / 30%);
+  --glow-b: rgb(240 166 202 / 28%);
+  --glow-c: transparent;
+  --glow-h: 200px;
+
+  /* Orb: a pearl reflecting the aurora */
+  --orb-base: #7dd3c8;
+  --orb-glow: 0 0 0 0 transparent;
+
+  --shadow-card: 0 1px 2px rgb(17 19 24 / 4%);
+  --shadow-popover: 0 8px 24px rgb(17 19 24 / 10%), 0 2px 6px rgb(17 19 24 / 6%);
 
   /* Layout (see components/layout/ViewportSync.tsx) */
   --app-h: 100dvh;
@@ -58,42 +74,49 @@
   color-scheme: light;
 }
 
+/* "Aurora at night" */
 [data-theme="dark"] {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #131217;
-  --card-foreground: #fafafa;
-  --popover: #18161d;
-  --popover-foreground: #fafafa;
-  --primary: #fafafa;
-  --primary-foreground: #09090b;
-  --secondary: #1c1a22;
-  --secondary-foreground: #fafafa;
-  --muted: #1c1a22;
-  --muted-foreground: #a1a1aa;
-  --subtle-foreground: #7c7c86;
-  --accent: #201e27;
-  --accent-foreground: #fafafa;
+  --background: #0a0f1c;
+  --foreground: #eef1f6;
+  --card: #121829;
+  --card-foreground: #eef1f6;
+  --popover: #161d30;
+  --popover-foreground: #eef1f6;
+  --primary: #eef1f6;
+  --primary-foreground: #0a0f1c;
+  --secondary: #1a2134;
+  --secondary-foreground: #eef1f6;
+  --muted: #1a2134;
+  --muted-foreground: #9aa3b5;
+  --subtle-foreground: #6b7385;
+  --accent: #1c2438;
+  --accent-foreground: #eef1f6;
   --destructive: #f87171;
   --border: rgb(255 255 255 / 8%);
   --input: rgb(255 255 255 / 12%);
-  --ring: #a78bfa;
+  --ring: #5eead4;
 
-  --brand: #a78bfa;
-  --brand-foreground: #09090b;
-  --brand-soft: rgb(167 139 250 / 14%);
-  --danger-soft: rgb(248 113 113 / 14%);
-  --danger-soft-foreground: #fca5a5;
+  --brand: #5eead4;
+  --brand-hover: #7ff0df;
+  --brand-foreground: #0a0f1c;
+  --brand-soft: rgb(94 234 212 / 12%);
+  --brand-text: #99f6e4;
+
+  --warning-soft: rgb(251 191 36 / 12%);
+  --warning-soft-foreground: #fbbf24;
   --scrim: rgb(0 0 0 / 60%);
+
+  --aurora-glow: 0 0 12px rgb(94 234 212 / 50%);
+
+  --glow-a: rgb(94 234 212 / 28%);
+  --glow-b: rgb(240 166 202 / 20%);
+  --glow-c: rgb(34 184 207 / 22%);
+  --glow-h: 250px;
+
+  --orb-glow: 0 0 24px -2px rgb(94 234 212 / 35%);
 
   --shadow-card: 0 0 0 0 transparent;
   --shadow-popover: 0 16px 48px rgb(0 0 0 / 50%);
-
-  --glow-1: #2e1065;
-  --glow-2: #4c1d95;
-  --glow-3: #701a75;
-
-  --orb-glow: 0 0 48px -4px rgb(167 139 250 / 60%);
 
   color-scheme: dark;
 }
@@ -129,10 +152,12 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-soft: var(--brand-soft);
-  --color-danger-soft: var(--danger-soft);
-  --color-danger-soft-foreground: var(--danger-soft-foreground);
+  --color-brand-text: var(--brand-text);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
   --color-scrim: var(--scrim);
 
   --font-sans: var(--font-geist-sans);
@@ -159,14 +184,18 @@
   --text-sm--line-height: 21px; /* 1.5 */
   --text-base: 16px;
   --text-base--line-height: 24px;
+  --text-note: 17px; /* affirmation on desktop */
+  --text-note--line-height: 26px; /* 1.5 */
+  --text-lg: 18px;
+  --text-lg--line-height: 27px;
   --text-xl: 20px;
   --text-xl--line-height: 28px;
   --text-2xl: 24px;
   --text-2xl--line-height: 32px;
-  --text-3xl: 30px;
-  --text-3xl--line-height: 36px;
-  --text-4xl: 40px;
-  --text-4xl--line-height: 48px;
+  --text-3xl: 26px; /* greeting, mobile */
+  --text-3xl--line-height: 31px; /* 1.2 */
+  --text-4xl: 32px; /* greeting, desktop */
+  --text-4xl--line-height: 38px; /* 1.2 */
 
   /* Radius: 8 controls, 12 inputs/rows, 16 cards, full pills. */
   --radius-sm: 8px;
@@ -232,10 +261,13 @@
 .orb::before {
   border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
   box-shadow: var(--orb-glow);
+  /* Mint bottom-left, pink top-right, teal bottom-right on a pearl base;
+     the white highlight is the ::after layer. */
   background:
-    radial-gradient(circle at 72% 70%, var(--orb-2) 0%, transparent 55%),
-    radial-gradient(circle at 25% 78%, var(--orb-3) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, var(--orb-1) 0%, var(--orb-1) 45%, var(--orb-3) 100%);
+    radial-gradient(circle at 22% 80%, var(--aurora-1) 0%, transparent 55%),
+    radial-gradient(circle at 80% 20%, var(--aurora-3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 82%, var(--aurora-2) 0%, transparent 55%),
+    var(--orb-base);
 }
 .orb[data-quiet]::before {
   box-shadow: none;
@@ -245,7 +277,7 @@
 }
 .orb::after {
   border-radius: 9999px;
-  background: radial-gradient(circle at 32% 26%, rgb(255 255 255 / 85%) 0%, rgb(255 255 255 / 15%) 22%, transparent 42%);
+  background: radial-gradient(circle at 30% 24%, rgb(255 255 255 / 90%) 0%, rgb(255 255 255 / 25%) 20%, transparent 40%);
 }
 .orb[data-thinking] {
   animation: orb-breathe 1.6s ease-in-out infinite;
@@ -366,9 +398,18 @@
    serifs; optical sizing adapts letter shapes to each size. */
 @utility font-display {
   font-family: var(--font-fraunces), Georgia, serif;
-  font-variation-settings: "SOFT" 80;
-  font-optical-sizing: auto;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  font-variation-settings: "SOFT" 50;
+  font-optical-sizing: auto; /* opsz follows the font size */
+  letter-spacing: -0.015em;
+}
+
+/* The aurora gradient: orb, progress fills, streak only. */
+@utility bg-aurora {
+  background-image: var(--aurora);
+}
+@utility aurora-glow {
+  box-shadow: var(--aurora-glow);
 }
 
 /* Horizontal scrollers fade out at both edges. */

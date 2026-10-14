@@ -25,7 +25,7 @@ const THEMES: { value: ThemePreference; label: string; Icon: typeof Sun }[] = [
 export function ProfileAvatar({ className }: { className?: string }) {
   return (
     <Avatar className={className}>
-      <AvatarFallback className="bg-brand-soft text-meta font-medium text-brand">
+      <AvatarFallback className="bg-brand-soft text-meta font-medium text-brand-text">
         {PLACEHOLDER_PROFILE.name[0]}
       </AvatarFallback>
     </Avatar>
@@ -56,7 +56,7 @@ export function ProfileMenu({ variant }: { variant: "pill" | "icon" | "avatar" }
         {variant === "pill" && (
           <>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-medium">{name}</span>
+              <span className="block truncate text-sm">{name}</span>
               <span className="block truncate text-xs text-muted-foreground">Kuala Lumpur</span>
             </span>
             <ChevronsUpDown className="size-4 text-muted-foreground" strokeWidth={1.5} />

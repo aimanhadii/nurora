@@ -15,8 +15,8 @@ export function ChatEmpty({
     <div className="flex flex-1 animate-fade-in flex-col items-center justify-center gap-8 py-8">
       <Orb size={88} animated />
       <div className="text-center">
-        <p className="text-xl text-muted-foreground">Hi, {name}</p>
-        <h2 className="mt-1 font-display text-3xl font-medium md:text-4xl">
+        <p className="text-base text-muted-foreground">Hi, {name}</p>
+        <h2 className="mt-2 font-display text-3xl md:text-4xl">
           How can I help today?
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
@@ -33,7 +33,7 @@ export function ChatEmpty({
               <Icon className="size-4" strokeWidth={1.5} />
             </span>
             <span>
-              <span className="block text-sm font-semibold">{text}</span>
+              <span className="block text-sm font-medium">{text}</span>
               <span className="mt-1 block text-meta text-muted-foreground">{description}</span>
             </span>
           </button>

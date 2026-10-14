@@ -48,7 +48,7 @@ export function MessageGroup({
   ));
 
   const time = (
-    <time dateTime={last.createdAt} className="font-mono text-xs tabular-nums text-subtle-foreground">
+    <time dateTime={last.createdAt} className="text-xs tabular-nums text-muted-foreground">
       {formatTime(last.createdAt)}
     </time>
   );

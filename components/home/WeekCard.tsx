@@ -16,7 +16,7 @@ export function WeekCard({ days, className }: { days: DayCount[]; className?: st
           This week
         </CardTitle>
         <CardAction>
-          <span className="font-mono text-sm tabular-nums text-muted-foreground">
+          <span className="text-meta tabular-nums text-muted-foreground">
             {total} done
           </span>
         </CardAction>
@@ -25,7 +25,7 @@ export function WeekCard({ days, className }: { days: DayCount[]; className?: st
         <ol className="flex h-32 items-end gap-2" aria-label="Tasks done per day">
           {days.map((d) => (
             <li key={d.key} className="flex h-full flex-1 flex-col items-center gap-2">
-              <span className="font-mono text-xs tabular-nums text-muted-foreground">
+              <span className="text-xs tabular-nums text-muted-foreground">
                 {d.count}
               </span>
               <div className="flex w-full flex-1 items-end justify-center">
@@ -41,8 +41,8 @@ export function WeekCard({ days, className }: { days: DayCount[]; className?: st
               </div>
               <span
                 className={cn(
-                  "text-xs font-medium",
-                  d.isToday ? "text-brand" : "text-muted-foreground",
+                  "text-xs",
+                  d.isToday ? "font-medium text-brand-text" : "text-muted-foreground",
                 )}
               >
                 <span className="sr-only">{d.count} done on </span>

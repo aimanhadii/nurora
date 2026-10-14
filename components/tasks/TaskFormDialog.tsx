@@ -110,7 +110,7 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
               onClick={onClick}
               className={cn(
                 "h-11 md:h-10",
-                active && "border-brand bg-brand-soft text-brand hover:bg-brand-soft hover:text-brand",
+                active && "border-brand bg-brand-soft text-brand-text hover:bg-brand-soft hover:text-brand-text",
               )}
             >
               <Icon strokeWidth={1.5} />

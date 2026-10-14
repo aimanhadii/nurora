@@ -58,10 +58,10 @@ function DaySection({
       <h2
         id={`day-${group.key}`}
         // Blur only, no tint: invisible over the page, readable over a card scrolling under it.
-        className="sticky top-[env(safe-area-inset-top)] z-10 flex items-center gap-2 py-2 text-meta font-medium tracking-normal text-muted-foreground backdrop-blur-xl md:top-0"
+        className="sticky top-[env(safe-area-inset-top)] z-10 flex items-center gap-2 py-2 text-meta tracking-normal text-muted-foreground backdrop-blur-xl md:top-0"
       >
         {group.label}
-        <span className="font-mono tabular-nums text-subtle-foreground">
+        <span className="tabular-nums text-muted-foreground">
           {group.tasks.length}
         </span>
       </h2>
@@ -80,7 +80,7 @@ function TabCount({ count }: { count: number }) {
   return (
     <Badge
       variant="secondary"
-      className="h-5 bg-transparent px-1 font-mono tabular-nums"
+      className="h-5 bg-transparent px-1 tabular-nums"
     >
       {count}
     </Badge>
@@ -138,10 +138,10 @@ export function TasksScreen() {
             {progress.total > 0 && (
               <div className="space-y-2 xl:hidden">
                 <div className="flex items-center justify-between text-meta">
-                  <span className="font-medium">
+                  <span>
                     {progress.done} of {progress.total} done today
                   </span>
-                  <span className="font-mono tabular-nums text-muted-foreground">
+                  <span className="tabular-nums text-muted-foreground">
                     {Math.round((progress.done / progress.total) * 100)}%
                   </span>
                 </div>

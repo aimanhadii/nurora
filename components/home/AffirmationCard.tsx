@@ -85,9 +85,9 @@ export function AffirmationCard({
       <CardContent className="flex flex-1 items-center">
         <blockquote
           key={text}
-          className="animate-fade-in font-display text-xl leading-snug font-normal text-balance italic md:text-2xl"
+          className="animate-fade-in font-display text-base leading-normal text-pretty text-muted-foreground md:text-note"
         >
-          “{text}”
+          {text}
         </blockquote>
       </CardContent>
     </Card>

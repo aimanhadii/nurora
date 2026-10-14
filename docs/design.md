@@ -18,54 +18,67 @@ few of our own.
 
 | Token | Light | Dark | Used for |
 |---|---|---|---|
-| `--background` | `#fafafc` | `#09090b` | page |
-| `--foreground` | `#0b0b0f` | `#fafafa` | primary text |
-| `--card` | `#ffffff` | `#131217` | cards, sheets, dialogs |
-| `--popover` | `#ffffff` | `#18161d` | menus, tooltips |
-| `--primary` | `#0b0b0f` | `#fafafa` | primary buttons, user bubble |
-| `--primary-foreground` | `#ffffff` | `#09090b` | text on primary |
-| `--secondary` / `--muted` | `#f4f4f6` | `#1c1a22` | chips, subtle fills, tracks |
-| `--muted-foreground` | `#6b7280` | `#a1a1aa` | secondary text (AA on bg) |
-| `--subtle-foreground` | `#8b8f98` | `#7c7c86` | hints, placeholders (large/aux only) |
-| `--accent` | `#f1f0f5` | `#201e27` | hover fill on neutral controls |
-| `--border` / `--input` | `rgb(0 0 0 / 7%)` | `rgb(255 255 255 / 8%)` | the one hairline |
-| `--ring` | `#7c3aed` | `#a78bfa` | focus ring |
-| `--brand` | `#7c3aed` | `#a78bfa` | active nav, checks, progress, links |
-| `--brand-foreground` | `#ffffff` | `#09090b` | icon/text on brand fill |
-| `--brand-soft` | violet 10% | violet 14% | active nav pill, icon wells |
-| `--destructive` | `#dc2626` | `#f87171` | delete |
-| `--danger-soft` / `--danger-soft-foreground` | `#fee2e2` / `#b91c1c` | red 14% / `#fca5a5` | overdue chips |
-| `--glow-1/2/3` | lavender / lilac / pink-violet | deep purples | page background glow |
-| `--orb-1/2/3`, `--orb-glow` | violet / magenta / lavender | same, brighter glow | Ilmora's orb |
+| `--background` | `#fafaf9` | `#0a0f1c` (night navy) | page |
+| `--foreground` | `#111318` | `#eef1f6` | primary text |
+| `--card` | `#ffffff` | `#121829` | cards, sheets, dialogs |
+| `--popover` | `#ffffff` | `#161d30` | menus, tooltips |
+| `--primary` | `#111318` | `#eef1f6` | primary buttons, user bubble |
+| `--primary-foreground` | `#ffffff` | `#0a0f1c` | text on primary |
+| `--secondary` / `--muted` | `#f2f3f4` | `#1a2134` | chips, subtle fills, tracks |
+| `--muted-foreground` | `#5b6170` | `#9aa3b5` | text-secondary (AA, also on the glow) |
+| `--subtle-foreground` | `#9aa0ac` | `#6b7385` | hints, placeholders only |
+| `--accent` | `#f1f2f3` | `#1c2438` | shadcn's neutral hover fill (not the brand accent) |
+| `--border` / `--input` | `rgb(17 19 24 / 7%)` | `rgb(255 255 255 / 8%)` | the one hairline |
+| `--brand` | `#0e8a78` | `#5eead4` | solid accent: fills, icons, checks, focus ring |
+| `--brand-hover` | `#0b7465` | `#7ff0df` | hover on brand fills |
+| `--brand-soft` | `#e2f6f1` | `rgb(94 234 212 / 12%)` | time chips, active nav/tab background |
+| `--brand-text` | `#0b5e52` | `#99f6e4` | **all accent-coloured text** |
+| `--warning-soft` / `-foreground` | `#fef3c7` / `#92400e` | amber 12% / `#fbbf24` | overdue chips |
+| `--destructive` | `#dc2626` | `#f87171` | delete, in menus and confirmations only |
+| `--aurora-1/2/3`, `--aurora` | `#5eead4` → `#22b8cf` → `#f0a6ca` | same, plus a faint mint glow | orb, progress fills, top glow, streak |
+| `--glow-a/b/c`, `--glow-h` | mint + pink, 200px | mint + teal + pink, 250px | the aurora at the top of the page |
+| `--orb-base`, `--orb-glow` | `#7dd3c8`, none | same, faint mint glow | the pearl orb |
 
-Colour budget: neutrals for ~90% of pixels. Violet only for primary, active,
-selected, progress and focus. One red, only for destructive and overdue.
+**Colour budget:** almost monochrome. The aurora gradient appears only on
+the orb, progress fills, the top glow and the streak dots. The solid accent
+covers small details: time chips, active nav/tab, links, the countdown
+number, checkmarks and focus rings. Success uses the accent (no green).
+Overdue is amber; red is only for destructive actions.
+
+**Contrast:** `--brand` is 4.3:1 on white, under AA for small text, so it is
+used for fills, icons and rings (which need 3:1). Accent-coloured *text*
+always uses `--brand-text` (7.7:1 on white, ~7:1 on `--brand-soft`). Text
+never sits on the strongest part of the aurora gradient.
 
 ## 2. Type
 
 Three families, all self-hosted via `next/font`:
 
-- **Fraunces** (`font-display`): a warm display serif, SOFT axis 80,
-  optical sizing on, -0.02em. Used sparingly, only for: page greeting /
-  titles, the Next up task title, the affirmation (italic), empty-state
-  and chat-welcome headings, and the lowercase **ilmora** wordmark.
+- **Fraunces** (`font-display`): weight 400 only, SOFT 50, optical sizing
+  on (opsz follows size), -0.015em, never italic. Used sparingly for: the
+  greeting / page titles, the Next up task title, the affirmation,
+  empty-state and chat-welcome headings, dialog titles, and the lowercase
+  **ilmora** wordmark.
 - **Geist Sans**: everything else — navigation, buttons, labels, rows,
   chips, inputs, chat bubbles, metadata.
-- **Geist Mono** with `tabular-nums`: times, counts and countdowns.
+- **Geist Mono** with `tabular-nums`: small time chips only ("4:00 pm").
+  Other numbers (countdown, ring centre) use Geist with tabular numbers.
 
 | Class | Size / line | Use |
 |---|---|---|
 | `text-xs` | 12 / 16 | badges, chip labels, timestamps |
-| `text-meta` | 13 / 20 | muted card labels (500), descriptions, notes, metadata |
+| `text-meta` | 13 / 20 | section labels (400, secondary), metadata, countdown line |
 | `text-sm` | 14 / 21 | body UI, list rows, buttons |
-| `text-base` | 16 / 24 | chat messages, inputs (16px stops iOS zoom) |
-| `text-xl` | 20 / 28 | wordmark, affirmation (mobile) |
-| `text-2xl` | 24 / 32 | Next up title, affirmation (desktop) |
-| `text-3xl` | 30 / 36 | page greeting / titles (mobile) |
-| `text-4xl` | 40 / 48 | page greeting / titles (desktop) |
+| `text-base` | 16 / 24 | chat, inputs (16px stops iOS zoom), "3 to go" (500), affirmation on phones |
+| `text-note` | 17 / 26 | affirmation on desktop |
+| `text-lg` | 18 / 27 | wordmark, progress ring centre (500) |
+| `text-xl` | 20 / 28 | Next up title, empty-state headings, dialog titles |
+| `text-3xl` | 26 / 31 | greeting / page titles (phones) |
+| `text-4xl` | 32 / 38 | greeting / page titles (desktop) |
 
-Weights: 400 body, 500 labels, controls and serif display, 600 sans headings
-and the wordmark. No other weights. Headings use -0.02em tracking.
+Weights: 400 for body and all serif text. 500 only for buttons, active nav
+and small emphasis. 600 only for tiny badge counts. 8–12px between a label
+and its content.
 
 ## 3. Spacing, radius, elevation
 
@@ -104,11 +117,11 @@ Rules:
   36 (default), 44 on touch targets (`size="lg"` / `icon-lg`).
 - **States:** every interactive element has hover (accent fill or
   opacity), active (`scale-[0.98]` or darker fill), focus-visible
-  (3px violet ring at 40%), disabled (50% opacity, no pointer).
+  (3px teal ring at 40%), disabled (50% opacity, no pointer).
 - **Icons:** lucide, 1.5 stroke; 16px in controls, 20px in navigation.
-- **Card header:** 13px/500 muted label left, optional ghost action right,
+- **Card header:** 13px/400 muted label left, optional ghost action right,
   16px gap to content.
-- **Chips / badges:** `rounded-full`, 12px, mono font for times.
+- **Chips / badges:** `rounded-full`, 12px. Time chips: mono, accent-soft + accent-text. Overdue: amber.
 - **Lists:** rows 12px radius, 44px min height, hover fill, divider-free
   (spacing separates rows).
 - **Empty states:** muted icon in a 40px well, one short line, one action.
@@ -118,7 +131,7 @@ Rules:
 
 ## 6. Screens
 
-- **Home:** greeting (32/600), date + summary line, then bento grid:
+- **Home:** greeting (Fraunces 32/400), date + summary line, then bento grid:
   Next up (2 cols) · Progress ring + streak · Affirmation · Today list
   (2 cols, 2 rows) · This week · Ask Ilmora (full width on desktop).
 - **Chat:** single 720px column for header, messages and composer.

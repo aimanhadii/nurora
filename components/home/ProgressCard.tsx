@@ -1,14 +1,17 @@
+import { useId } from "react";
 import { CircleCheck } from "lucide-react";
 import type { DayCount } from "@/lib/tasks/stats";
-import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StreakDots } from "@/components/shared/StreakDots";
 
 const SIZE = 88;
-const STROKE = 8;
+const STROKE = 6;
 const RADIUS = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
+/** Ring filled with the aurora gradient (an SVG gradient, same three stops). */
 function ProgressRing({ done, total }: { done: number; total: number }) {
+  const gradientId = useId();
   const fraction = total === 0 ? 0 : done / total;
   return (
     <div className="relative shrink-0" style={{ width: SIZE, height: SIZE }}>
@@ -20,20 +23,38 @@ function ProgressRing({ done, total }: { done: number; total: number }) {
         role="img"
         aria-label={`${done} of ${total} tasks done today`}
       >
-        <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" strokeWidth={STROKE} className="stroke-muted" />
+        <defs>
+          {/* The SVG is rotated -90° so the arc starts at the top; in the
+              unrotated frame "visual top → bottom" is right → left. That
+              keeps mint where the arc starts, then teal, then pink. */}
+          <linearGradient id={gradientId} x1="1" y1="0" x2="0" y2="0">
+            <stop offset="0%" style={{ stopColor: "var(--aurora-1)" }} />
+            <stop offset="55%" style={{ stopColor: "var(--aurora-2)" }} />
+            <stop offset="100%" style={{ stopColor: "var(--aurora-3)" }} />
+          </linearGradient>
+        </defs>
         <circle
           cx={SIZE / 2}
           cy={SIZE / 2}
           r={RADIUS}
           fill="none"
           strokeWidth={STROKE}
+          className="stroke-muted"
+        />
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          fill="none"
+          stroke={`url(#${gradientId})`}
+          strokeWidth={STROKE}
           strokeLinecap="round"
           strokeDasharray={CIRCUMFERENCE}
           strokeDashoffset={CIRCUMFERENCE * (1 - fraction)}
-          className="stroke-brand transition-[stroke-dashoffset] duration-700 ease-out"
+          className="transition-[stroke-dashoffset] duration-700 ease-out"
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center font-mono text-xl font-medium tabular-nums">
+      <span className="absolute inset-0 flex items-center justify-center text-lg font-medium tabular-nums">
         {done}/{total}
       </span>
     </div>
@@ -65,28 +86,26 @@ export function ProgressCard({
       <CardContent className="flex items-center gap-5">
         <ProgressRing done={done} total={total} />
         <div className="min-w-0">
-          <p className="text-xl font-semibold tracking-tight">
-            {total === 0 ? "Free day" : left === 0 ? "All done" : `${left} to go`}
+          <p className="text-base font-medium">
+            {total === 0
+              ? "Free day"
+              : left === 0
+                ? "All done"
+                : `${left} to go`}
           </p>
           <p className="mt-1 text-meta text-muted-foreground">
-            {total === 0 ? "Nothing due today" : `${done} of ${total} done today`}
+            {total === 0
+              ? "Nothing due today"
+              : `${done} of ${total} done today`}
           </p>
         </div>
       </CardContent>
       <div className="mt-auto flex items-center justify-between border-t pt-4">
-        <p className="text-sm font-medium">
-          <span aria-hidden="true">🔥 </span>
-          {streak}-day streak
+        <p className="text-meta text-muted-foreground">
+          <span className="text-foreground tabular-nums">{streak}-day</span>{" "}
+          streak
         </p>
-        {/* Last 7 days: filled = at least one task done. */}
-        <div className="flex gap-1" aria-hidden="true">
-          {week.map((d) => (
-            <span
-              key={d.key}
-              className={cn("size-2 rounded-full", d.count > 0 ? "bg-brand" : "bg-foreground/15")}
-            />
-          ))}
-        </div>
+        <StreakDots week={week} />
       </div>
     </Card>
   );

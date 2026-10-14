@@ -23,8 +23,8 @@ export function BottomNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex h-full flex-col items-center justify-center gap-1 text-xs font-medium outline-none transition-colors focus-visible:bg-accent active:bg-accent",
-                  active ? "text-brand" : "text-muted-foreground",
+                  "flex h-full flex-col items-center justify-center gap-1 text-xs outline-none transition-colors focus-visible:bg-accent active:bg-accent",
+                  active ? "font-medium text-brand-text" : "text-muted-foreground",
                 )}
               >
                 <Icon className="size-5" strokeWidth={active ? 2 : 1.5} />
