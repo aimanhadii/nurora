@@ -55,9 +55,9 @@ export function HomeScreen() {
       <PageHeader
         title={`${greeting(now)}, ${PLACEHOLDER_PROFILE.name}`}
         description={
-          // Phones: date and summary on their own lines; wider: one line.
+          // Phones: the header above already shows the date, so only the summary.
           <>
-            <span className="block md:inline">{formatLongDate(now)}</span>
+            <span className="hidden md:inline">{formatLongDate(now)}</span>
             <span className="mx-2 hidden text-subtle-foreground md:inline" aria-hidden="true">
               ·
             </span>

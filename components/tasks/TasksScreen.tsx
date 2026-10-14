@@ -58,7 +58,7 @@ function DaySection({
       <h2
         id={`day-${group.key}`}
         // Blur only, no tint: invisible over the page, readable over a card scrolling under it.
-        className="sticky top-[env(safe-area-inset-top)] z-10 flex items-center gap-2 py-2 text-meta tracking-normal text-muted-foreground backdrop-blur-xl md:top-0"
+        className="sticky top-(--mobile-header-h) z-10 flex items-center gap-2 py-2 text-meta tracking-normal text-muted-foreground backdrop-blur-xl"
       >
         {group.label}
         <span className="tabular-nums text-muted-foreground">

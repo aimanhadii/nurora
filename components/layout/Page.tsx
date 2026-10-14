@@ -1,22 +1,30 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { MobileHeader } from "./MobileHeader";
 
 /**
  * Scrollable page body: 16 / 24 / 32px side padding, content max 1120px.
- * On phones it starts with the shared brand bar (which also handles the
- * status-bar safe area). Bottom padding clears the phone tab bar.
+ * On phones the shared brand bar sticks to the top of this scroll area
+ * (full width, outside the padded column); scroll-padding keeps
+ * scroll-into-view targets clear of it. Bottom padding clears the tab bar.
  */
 export function Page({ children, className }: { children: ReactNode; className?: string }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="h-full overflow-y-auto overscroll-contain">
+    <div
+      ref={scrollRef}
+      className="h-full scroll-pt-(--mobile-header-h) overflow-y-auto overscroll-contain"
+    >
+      <MobileHeader scrollRef={scrollRef} className="md:hidden" />
       <div
         className={cn(
-          "mx-auto w-full max-w-280 px-4 pb-[calc(var(--tabbar-h)+24px)] md:px-6 md:pt-8 md:pb-8 xl:px-8",
+          "mx-auto w-full max-w-280 px-4 pt-2 pb-[calc(var(--tabbar-h)+24px)] md:px-6 md:pt-8 md:pb-8 xl:px-8",
           className,
         )}
       >
-        <MobileHeader className="mb-2 md:hidden" />
         {children}
       </div>
     </div>

@@ -4,9 +4,7 @@ import { useEffect, useRef } from "react";
 import { sendChatMessage, useTyping } from "@/lib/chat";
 import { useLocalData } from "@/lib/local-store";
 import { PLACEHOLDER_PROFILE } from "@/lib/profile";
-import { formatLongDate } from "@/lib/time";
 import type { Message } from "@/lib/types";
-import { useNow } from "@/lib/use-now";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Orb } from "@/components/ui/Orb";
 import { MobileHeader } from "@/components/layout/MobileHeader";
@@ -46,7 +44,6 @@ const COLUMN = "mx-auto w-full max-w-180 px-4 md:px-6";
  */
 export function ChatScreen() {
   const data = useLocalData();
-  const now = useNow();
   const typing = useTyping();
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasScrolled = useRef(false);
@@ -65,10 +62,7 @@ export function ChatScreen() {
   return (
     <div className="flex h-full flex-col">
       <h1 className="sr-only">Chat with Nurora</h1>
-      <MobileHeader
-        subtitle={now ? formatLongDate(now) : " "}
-        rowClassName={`${COLUMN} md:py-5`}
-      />
+      <MobileHeader scrollRef={scrollRef} rowClassName={`${COLUMN} md:py-5`} />
 
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <div className={`${COLUMN} flex min-h-full flex-col`}>

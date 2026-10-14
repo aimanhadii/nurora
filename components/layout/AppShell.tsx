@@ -19,9 +19,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <GlowBackground />
       <ViewportSync />
 
-      {/* Solid strip under the iPhone status bar so content doesn't scroll behind the clock. */}
-      <div className="fixed inset-x-0 top-0 z-40 h-[env(safe-area-inset-top)] bg-background/90 backdrop-blur-xl md:hidden" />
-
       <div className="relative z-10 flex h-[var(--app-h)]">
         <Sidebar />
         <main className="h-full min-w-0 flex-1">{children}</main>

@@ -70,6 +70,8 @@
   --app-h: 100dvh;
   --kb: 0px;
   --tabbar-h: calc(4rem + env(safe-area-inset-bottom));
+  /* Sticky brand bar on phones (components/layout/MobileHeader.tsx): 72px + status bar. */
+  --mobile-header-h: calc(4.5rem + env(safe-area-inset-top));
 
   color-scheme: light;
 }
@@ -124,6 +126,7 @@
 @media (min-width: 48rem) {
   :root {
     --tabbar-h: 0px;
+    --mobile-header-h: 0px;
   }
 }
 /* Typing on a phone: the keyboard takes the tab bar's place. */
