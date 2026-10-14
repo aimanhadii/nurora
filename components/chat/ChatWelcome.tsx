@@ -1,18 +1,28 @@
-import { Sparkles } from "lucide-react";
+import { Orb } from "@/components/ui/Orb";
+import { QuickActionGrid } from "./QuickReplies";
 
-export function ChatWelcome({ name }: { name: string }) {
+export function ChatWelcome({
+  name,
+  subtitle,
+  onPick,
+  disabled,
+}: {
+  name: string;
+  subtitle: string;
+  onPick: (text: string) => void;
+  disabled?: boolean;
+}) {
   return (
-    <div className="flex flex-1 animate-fade-in flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="accent-fill flex size-16 items-center justify-center rounded-[22px] shadow-[0_0_48px_-8px_var(--accent)]">
-        <Sparkles className="size-8" strokeWidth={1.5} />
+    <div className="flex flex-1 animate-fade-in flex-col items-center justify-center gap-8 py-8">
+      <Orb size={96} />
+      <div className="text-center">
+        <p className="text-xl font-medium text-text-2 md:text-2xl">Hi, {name}</p>
+        <h2 className="mt-1 text-[28px] leading-tight font-bold tracking-tight md:text-4xl">
+          How can I help today?
+        </h2>
+        <p className="mt-3 text-sm text-text-2">{subtitle}</p>
       </div>
-      <h2 className="mt-6 text-xl font-semibold tracking-tight">
-        Hey {name}, I&apos;m Teman
-      </h2>
-      <p className="mt-2 max-w-xs text-[15px] leading-relaxed text-fg-2">
-        Tell me what&apos;s on your plate — English, Malay, or both. I&apos;ll
-        keep track so you don&apos;t have to.
-      </p>
+      <QuickActionGrid onPick={onPick} disabled={disabled} />
     </div>
   );
 }

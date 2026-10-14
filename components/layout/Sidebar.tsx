@@ -3,51 +3,33 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronsUpDown, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { PLACEHOLDER_PROFILE } from "@/lib/profile";
-import { GlassPanel } from "@/components/ui/GlassPanel";
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Orb } from "@/components/ui/Orb";
+import { Surface } from "@/components/ui/Surface";
 import { NAV_ITEMS } from "./nav-items";
+import { ProfileMenu } from "./ProfileMenu";
 
-export function LogoMark() {
-  return (
-    <span className="accent-fill flex size-9 shrink-0 items-center justify-center rounded-xl text-base font-bold">
-      t
-    </span>
-  );
-}
-
-export function Avatar({ name }: { name: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-linear-135 from-accent-solid to-accent-2 text-sm font-semibold"
-    >
-      {name[0]}
-    </span>
-  );
-}
-
-/** Glass navigation panel for tablet and desktop. Can fold to an icon rail. */
+/** Navigation panel for tablet and desktop. Can fold to an icon rail. */
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose;
-  const name = PLACEHOLDER_PROFILE.name;
 
   return (
-    <GlassPanel
+    <Surface
       as="aside"
-      className={`hidden shrink-0 flex-col rounded-panel p-3 transition-[width] duration-300 ease-out md:flex ${
-        collapsed ? "w-[76px] items-center" : "w-60"
+      variant="glass"
+      className={`hidden h-full flex-col rounded-card p-3 transition-[width] duration-300 ease-out md:flex ${
+        collapsed ? "w-[76px] items-center" : "w-[260px]"
       }`}
     >
       <div
-        className={`flex gap-2 ${collapsed ? "flex-col items-center" : "items-center justify-between pl-1"}`}
+        className={`flex gap-2 ${collapsed ? "flex-col items-center" : "items-center justify-between pl-1.5"}`}
       >
         <div className="flex items-center gap-2.5">
-          <LogoMark />
+          <Orb size={30} />
           {!collapsed && (
-            <span className="text-lg font-semibold tracking-tight">teman</span>
+            <span className="text-lg font-bold tracking-tight">teman</span>
           )}
         </div>
         <button
@@ -55,9 +37,9 @@ export function Sidebar() {
           onClick={() => setCollapsed(!collapsed)}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!collapsed}
-          className="flex size-11 items-center justify-center rounded-full text-fg-3 transition hover:bg-glass-hover hover:text-fg"
+          className="flex size-11 items-center justify-center rounded-full text-text-3 transition hover:bg-surface-2 hover:text-text"
         >
-          <ToggleIcon className="size-[18px]" strokeWidth={1.75} />
+          <ToggleIcon className="size-[18px]" strokeWidth={1.5} />
         </button>
       </div>
 
@@ -75,14 +57,11 @@ export function Sidebar() {
                     collapsed ? "justify-center" : "px-4"
                   } ${
                     active
-                      ? "glass-flat text-fg"
-                      : "border border-transparent text-fg-2 hover:bg-glass-hover hover:text-fg"
+                      ? "bg-accent-soft text-accent shadow-active"
+                      : "text-text-2 hover:bg-surface-2 hover:text-text"
                   }`}
                 >
-                  <Icon
-                    className={`size-[18px] shrink-0 ${active ? "text-accent" : ""}`}
-                    strokeWidth={1.75}
-                  />
+                  <Icon className="size-[18px] shrink-0" strokeWidth={1.5} />
                   <span className={collapsed ? "sr-only" : ""}>{label}</span>
                 </Link>
               </li>
@@ -91,25 +70,9 @@ export function Sidebar() {
         </ul>
       </nav>
 
-      <div
-        className={`mt-auto flex h-12 items-center gap-3 rounded-full glass-flat ${
-          collapsed ? "w-12 justify-center" : "w-full pr-3 pl-2"
-        }`}
-      >
-        <Avatar name={name} />
-        {!collapsed && (
-          <>
-            <span className="min-w-0 flex-1 truncate text-sm font-medium">
-              {name}
-            </span>
-            <ChevronsUpDown
-              className="size-4 text-fg-3"
-              strokeWidth={1.75}
-              aria-hidden="true"
-            />
-          </>
-        )}
+      <div className="mt-auto w-full">
+        <ProfileMenu variant={collapsed ? "pill-collapsed" : "pill"} />
       </div>
-    </GlassPanel>
+    </Surface>
   );
 }

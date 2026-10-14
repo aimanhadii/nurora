@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { ArrowUp } from "lucide-react";
-import { GlassPanel } from "@/components/ui/GlassPanel";
+import { Surface } from "@/components/ui/Surface";
+import { AddTaskButton } from "@/components/tasks/TaskSheet";
 
 export function ChatInput({
   onSend,
@@ -22,11 +23,12 @@ export function ChatInput({
   }
 
   return (
-    <GlassPanel
+    <Surface
       as="form"
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 rounded-full p-1.5 pl-5 transition-[border-color] focus-within:border-white/25"
+      className="flex items-center gap-1 rounded-full p-1.5 transition focus-within:border-border-strong focus-within:shadow-active"
     >
+      <AddTaskButton variant="icon" />
       <label htmlFor="chat-input" className="sr-only">
         Message Teman
       </label>
@@ -34,20 +36,20 @@ export function ChatInput({
         id="chat-input"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Message Teman…"
+        placeholder="Ask Teman anything..."
         autoComplete="off"
         enterKeyHint="send"
         // 16px text stops iOS Safari from zooming in on focus.
-        className="min-w-0 flex-1 bg-transparent py-2 text-base outline-none placeholder:text-fg-3 focus-visible:outline-none"
+        className="min-w-0 flex-1 bg-transparent px-1 py-2 text-base outline-none placeholder:text-text-3 focus-visible:outline-none"
       />
       <button
         type="submit"
         disabled={!canSend}
         aria-label="Send message"
-        className="accent-fill flex size-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 disabled:opacity-35 disabled:saturate-50"
+        className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-fg transition active:scale-90 disabled:opacity-25"
       >
-        <ArrowUp className="size-5" strokeWidth={2.25} />
+        <ArrowUp className="size-5" strokeWidth={2} />
       </button>
-    </GlassPanel>
+    </Surface>
   );
 }

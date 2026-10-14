@@ -16,7 +16,7 @@ import type { Task } from "@/lib/types";
 import { useNow } from "@/lib/use-now";
 
 const fieldClass =
-  "glass-flat h-12 w-full min-w-0 rounded-item px-4 text-base outline-none transition focus:border-white/30";
+  "h-12 w-full min-w-0 rounded-full border border-border bg-surface-2 px-4 text-base outline-none transition focus:border-accent";
 
 // Drag the handle down this far to dismiss the sheet.
 const DISMISS_DRAG_PX = 110;
@@ -54,6 +54,9 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    // The sheet can be opened from inside the chat <form>; React would pass
+    // this submit up to it too (events bubble through portals).
+    event.stopPropagation();
     const input = { title, date: date || undefined, time: date ? time : undefined };
     if (!title.trim()) return;
     if (task) updateTask(task.id, input);
@@ -72,13 +75,13 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
             onClick={onClick}
             className={`flex h-20 flex-col items-center justify-center gap-1.5 rounded-item border text-sm font-medium transition active:scale-95 ${
               active
-                ? "border-accent/60 bg-accent/15 text-fg"
-                : "glass-flat text-fg-2 hover:text-fg"
+                ? "border-accent bg-accent-soft text-text shadow-active"
+                : "border-border bg-surface text-text-2 shadow-soft hover:text-text"
             }`}
           >
             <Icon
               className={`size-5 ${active ? "text-accent" : ""}`}
-              strokeWidth={1.75}
+              strokeWidth={1.5}
             />
             {label}
           </button>
@@ -86,20 +89,20 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
       </div>
 
       <label className="block space-y-1.5">
-        <span className="px-1 text-xs font-medium text-fg-2">Title</span>
+        <span className="px-1 text-xs font-medium text-text-2">Title</span>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="What do you need to do?"
           autoComplete="off"
           required
-          className={`${fieldClass} placeholder:text-fg-3`}
+          className={`${fieldClass} placeholder:text-text-3`}
         />
       </label>
 
       <div className="grid grid-cols-2 gap-2.5">
         <label className="block min-w-0 space-y-1.5">
-          <span className="px-1 text-xs font-medium text-fg-2">Date</span>
+          <span className="px-1 text-xs font-medium text-text-2">Date</span>
           <input
             id={dateId}
             type="date"
@@ -109,7 +112,7 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
           />
         </label>
         <label className="block min-w-0 space-y-1.5">
-          <span className="px-1 text-xs font-medium text-fg-2">Time</span>
+          <span className="px-1 text-xs font-medium text-text-2">Time</span>
           <input
             type="time"
             value={time}
@@ -123,7 +126,7 @@ function TaskForm({ task, onDone }: { task?: Task; onDone: () => void }) {
       <button
         type="submit"
         disabled={!title.trim()}
-        className="accent-fill mt-2 h-12 w-full rounded-full font-semibold transition active:scale-[0.98] disabled:opacity-40"
+        className="mt-2 h-12 bg-primary text-primary-fg w-full rounded-full font-semibold transition active:scale-[0.98] disabled:opacity-40"
       >
         {task ? "Save changes" : "Add task"}
       </button>
@@ -171,7 +174,7 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
       // A click on the dialog element itself is a click on the backdrop.
       onClick={(e) => e.target === ref.current && onClose()}
       aria-labelledby="task-sheet-heading"
-      className="glass-strong m-0 mt-auto mb-[var(--kb)] max-h-[calc(var(--app-h)-1rem)] w-full max-w-none overflow-y-auto rounded-t-sheet p-0 text-fg backdrop:bg-black/55 open:animate-sheet-up md:m-auto md:max-w-md md:rounded-sheet md:open:animate-dialog-in"
+      className="surface-raised m-0 mt-auto mb-[var(--kb)] max-h-[calc(var(--app-h)-1rem)] w-full max-w-none overflow-y-auto rounded-t-sheet p-0 text-text backdrop:bg-scrim open:animate-sheet-up md:m-auto md:max-w-md md:rounded-sheet md:open:animate-dialog-in"
     >
       {/* Drag handle area (phones). */}
       <div
@@ -181,7 +184,7 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
         onPointerCancel={onDragEnd}
         className="flex touch-none justify-center pt-3 pb-1 md:hidden"
       >
-        <span className="h-1.5 w-11 rounded-full bg-white/25" />
+        <span className="h-1.5 w-11 rounded-full bg-border-strong" />
       </div>
 
       <div className="px-5 pt-2 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] md:p-6">
@@ -193,9 +196,9 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="-mr-2 flex size-11 items-center justify-center rounded-full text-fg-2 transition hover:bg-glass-hover hover:text-fg"
+            className="-mr-2 flex size-11 items-center justify-center rounded-full text-text-2 transition hover:bg-surface-2 hover:text-text"
           >
-            <X className="size-5" strokeWidth={1.75} />
+            <X className="size-5" strokeWidth={1.5} />
           </button>
         </div>
         <TaskForm task={task} onDone={onClose} />
@@ -206,15 +209,19 @@ export function TaskSheet({ task, onClose }: { task?: Task; onClose: () => void 
 }
 
 const TRIGGER_STYLES = {
-  // Floating crimson button for phones, above the tab bar.
-  fab: "accent-fill flex fixed right-5 bottom-[calc(var(--nav-h)+1rem)] z-20 size-14 justify-center rounded-full shadow-[0_8px_32px_-8px_var(--accent)] active:scale-90 md:hidden",
-  // Pill for headers on tablet/desktop.
+  // Floating primary button for phones, above the tab bar.
+  fab: "flex fixed right-5 bottom-[calc(var(--nav-h)+1rem)] z-20 size-14 justify-center rounded-full bg-primary text-primary-fg shadow-raised active:scale-90 md:hidden",
+  // Primary pill for headers on tablet/desktop.
   header:
-    "accent-fill hidden h-11 gap-1.5 rounded-full px-5 text-sm font-semibold active:scale-95 md:flex",
+    "hidden h-11 gap-1.5 rounded-full bg-primary px-5 text-sm font-semibold text-primary-fg active:scale-95 md:flex",
   // Quiet dashed button for panels and empty states.
   inline:
-    "flex h-11 w-full justify-center gap-1.5 rounded-full border border-dashed border-white/20 text-sm font-medium text-fg-2 hover:bg-glass-hover hover:text-fg active:scale-[0.98]",
+    "flex h-11 w-full justify-center gap-1.5 rounded-full border border-dashed border-border-strong text-sm font-medium text-text-2 hover:bg-surface-2 hover:text-text active:scale-[0.98]",
+  // Small "+" inside the chat input.
+  icon: "flex size-11 shrink-0 justify-center rounded-full text-text-2 hover:bg-surface-2 hover:text-text active:scale-90",
 };
+
+const ICON_ONLY = new Set(["fab", "icon"]);
 
 export function AddTaskButton({
   variant,
@@ -228,11 +235,14 @@ export function AddTaskButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={variant === "fab" ? "Add task" : undefined}
+        aria-label={ICON_ONLY.has(variant) ? "Add task" : undefined}
         className={`items-center transition ${TRIGGER_STYLES[variant]}`}
       >
-        <Plus className={variant === "fab" ? "size-6" : "size-4"} strokeWidth={2} />
-        {variant !== "fab" && "Add task"}
+        <Plus
+          className={variant === "fab" ? "size-6" : variant === "icon" ? "size-5" : "size-4"}
+          strokeWidth={variant === "icon" ? 1.5 : 2}
+        />
+        {!ICON_ONLY.has(variant) && "Add task"}
       </button>
       {open && <TaskSheet onClose={() => setOpen(false)} />}
     </>

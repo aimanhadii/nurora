@@ -11,8 +11,8 @@ import { ViewportSync } from "./ViewportSync";
 
 /**
  * Phone: full-screen content + floating tab bar.
- * Tablet: collapsible sidebar + content.
- * Desktop: sidebar + chat + "Today" panel, floating with gaps.
+ * Tablet: collapsible sidebar | content.
+ * Desktop: a 3-column grid — sidebar | chat | "Today" panel.
  */
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -23,12 +23,15 @@ export function AppShell({ children }: { children: ReactNode }) {
       <GlowBackground />
       <ViewportSync />
 
-      {/* Solid strip under the iPhone status bar so text doesn't scroll behind the clock. */}
-      <div className="fixed inset-x-0 top-0 z-40 h-[env(safe-area-inset-top)] bg-bg/85 md:hidden" />
-
-      <div className="relative z-10 flex h-[var(--app-h)] overflow-hidden md:gap-3 md:p-3">
+      <div
+        className={`relative z-10 h-[var(--app-h)] md:grid md:grid-rows-[minmax(0,1fr)] md:gap-4 md:p-4 ${
+          onChat
+            ? "md:grid-cols-[auto_minmax(0,1fr)] xl:grid-cols-[auto_minmax(0,1fr)_340px]"
+            : "md:grid-cols-[auto_minmax(0,1fr)]"
+        }`}
+      >
         <Sidebar />
-        <main className="relative min-w-0 flex-1">{children}</main>
+        <main className="relative h-full min-h-0 min-w-0">{children}</main>
         {onChat && <TodayPanel />}
       </div>
 

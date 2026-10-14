@@ -1,30 +1,20 @@
-import { GlassPanel } from "@/components/ui/GlassPanel";
+import { Surface } from "@/components/ui/Surface";
 
-export function ProgressSummary({
-  done,
-  total,
-  flat,
-}: {
-  done: number;
-  total: number;
-  /** Skip the blur when already inside another glass panel. */
-  flat?: boolean;
-}) {
+export function ProgressSummary({ done, total }: { done: number; total: number }) {
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-  const complete = total > 0 && done === total;
   const message =
     total === 0
       ? "Nothing due today"
-      : complete
+      : done === total
         ? "All done for today ✨"
         : `${done} of ${total} done today`;
 
   return (
-    <GlassPanel strength={flat ? "flat" : "regular"} className="rounded-panel p-5">
+    <Surface className="rounded-card p-5">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="text-[15px] font-medium">{message}</p>
+        <p className="text-[15px] font-semibold">{message}</p>
         {total > 0 && (
-          <p className="text-sm text-fg-2 tabular-nums">{percent}%</p>
+          <p className="text-sm text-text-2 tabular-nums">{percent}%</p>
         )}
       </div>
       <div
@@ -33,18 +23,13 @@ export function ProgressSummary({
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={done}
-        className="mt-4 h-1 rounded-full bg-white/10"
+        className="mt-4 h-1.5 rounded-full bg-surface-2"
       >
-        {/* Crimson while in progress, teal once everything is done. */}
         <div
-          className={`h-full rounded-full transition-[width,background-color] duration-700 ease-out ${
-            complete
-              ? "bg-accent-2 shadow-[0_0_12px_0_var(--accent-2)]"
-              : "bg-accent shadow-[0_0_12px_0_var(--accent)]"
-          }`}
+          className="h-full rounded-full bg-accent shadow-active transition-[width] duration-700 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
-    </GlassPanel>
+    </Surface>
   );
 }

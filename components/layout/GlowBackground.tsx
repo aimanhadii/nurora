@@ -1,37 +1,21 @@
 /**
- * The glowing backdrop behind every glass surface. One fixed layer for the
- * whole app (not per component), so the GPU only paints it once.
+ * Soft glows at the top and bottom of the page, fading out in the middle.
+ * Pure gradients on one fixed layer: no blur filters, nothing animating,
+ * so it costs the GPU almost nothing. Colours come from --glow-1/2/3.
  */
 export function GlowBackground() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-[var(--glow-opacity)]"
-    >
-      {/* Crimson, top-left */}
-      <div
-        className="absolute -top-[22vmax] -left-[18vmax] size-[62vmax] animate-drift-a rounded-full blur-[90px] will-change-transform"
-        style={{
-          background:
-            "radial-gradient(circle, var(--glow-red-2) 0%, var(--glow-red-1) 38%, transparent 68%)",
-        }}
-      />
-      {/* Deeper crimson, upper centre */}
-      <div
-        className="absolute top-[8vh] left-[38vw] size-[34vmax] animate-drift-c rounded-full opacity-70 blur-[100px] will-change-transform"
-        style={{
-          background:
-            "radial-gradient(circle, var(--glow-red-1) 0%, transparent 65%)",
-        }}
-      />
-      {/* Teal, bottom-right */}
-      <div
-        className="absolute -right-[20vmax] -bottom-[24vmax] size-[60vmax] animate-drift-b rounded-full blur-[90px] will-change-transform"
-        style={{
-          background:
-            "radial-gradient(circle, var(--glow-teal-2) 0%, var(--glow-teal-1) 40%, transparent 68%)",
-        }}
-      />
-    </div>
+      className="pointer-events-none fixed inset-0 z-0"
+      style={{
+        background: [
+          "radial-gradient(70% 45% at 15% 0%, var(--glow-1), transparent 70%)",
+          "radial-gradient(55% 40% at 85% 0%, var(--glow-3), transparent 70%)",
+          "radial-gradient(80% 45% at 70% 100%, var(--glow-2), transparent 70%)",
+          "radial-gradient(50% 35% at 10% 100%, var(--glow-1), transparent 70%)",
+        ].join(","),
+      }}
+    />
   );
 }

@@ -1,52 +1,107 @@
 @import "tailwindcss";
 
+/* `dark:` utilities follow our data-theme attribute instead of the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* =====================================================================
-   Design tokens — tweak the whole look from here.
+   Design tokens. ONE set of names; the dark block below only swaps
+   values. Components use these names, never raw colours.
    ===================================================================== */
 
 :root {
-  /* Base */
-  --bg: #07080a;
+  /* Page */
+  --bg: #fafafc;
+  --glow-1: #ede9fe; /* lavender */
+  --glow-2: #ddd6fe; /* lilac */
+  --glow-3: #f5d0fe; /* pink-violet hint */
 
-  /* Background glows */
-  --glow-red-1: #b3121f;
-  --glow-red-2: #e5383b;
-  --glow-teal-1: #0f766e;
-  --glow-teal-2: #14b8a6;
-  --glow-opacity: 0.55;
+  /* Surfaces */
+  --surface: #ffffff; /* cards */
+  --surface-glass: rgb(255 255 255 / 0.8); /* bars with backdrop blur */
+  --surface-2: #f4f4f7; /* chips, inputs, subtle fills */
+  --border: rgb(0 0 0 / 0.06);
+  --border-strong: rgb(0 0 0 / 0.14);
+  --shadow: 0 8px 24px rgb(17 12 46 / 0.06);
+  --shadow-item: 0 1px 3px rgb(17 12 46 / 0.05); /* list rows: small enough not to get clipped */
+  --shadow-raised: 0 16px 48px rgb(17 12 46 / 0.14);
+  --scrim: rgb(17 12 46 / 0.28); /* dims the page behind sheets */
 
   /* Text */
-  --fg: #ffffff;
-  --fg-2: rgb(255 255 255 / 0.62); /* secondary */
-  --fg-3: rgb(255 255 255 / 0.42); /* hints */
+  --text: #0b0b0f;
+  --text-2: #6b7280; /* secondary */
+  --text-3: #9ca3af; /* hints */
 
-  /* Accents */
-  --accent: #e5383b; /* crimson: icons, progress, focus */
-  --accent-solid: #c8232c; /* crimson fill behind white text */
-  --accent-deep: #a5121d;
-  --accent-2: #14b8a6; /* teal, used sparingly */
-  --danger: #ff5a5f;
-  --danger-soft: #ff8a8e; /* overdue text on a faint red chip */
+  /* Accent (violet) */
+  --accent: #7c3aed;
+  --accent-fg: #ffffff; /* icons/text on an accent fill */
+  --accent-soft: rgb(124 58 237 / 0.1);
+  --active-glow: 0 0 0 0 transparent;
 
-  /* Glass */
-  --glass-fill: rgb(255 255 255 / 0.06);
-  /* Menus and sheets sit over busy content, so they're darker for legibility. */
-  --glass-fill-strong: rgb(28 29 34 / 0.62);
-  --glass-fill-hover: rgb(255 255 255 / 0.1);
-  --glass-border: rgb(255 255 255 / 0.12);
-  --glass-highlight: rgb(255 255 255 / 0.16);
-  --glass-blur: 28px;
-  --glass-blur-strong: 40px;
-  --glass-saturate: 140%;
-  /* Used when the browser can't blur, or the user asked for less transparency. */
-  --glass-solid: #16171b;
-  --glass-solid-strong: #1c1d22;
-  --hairline: rgb(255 255 255 / 0.08);
+  /* Primary buttons */
+  --primary-bg: #0b0b0f;
+  --primary-fg: #ffffff;
+
+  /* Chat bubbles */
+  --user-bubble-bg: #0b0b0f;
+  --user-bubble-fg: #ffffff;
+  --bot-bubble-bg: #ffffff;
+
+  /* Danger / overdue */
+  --danger: #dc2626;
+  --danger-soft-bg: #fee2e2;
+  --danger-soft-fg: #b91c1c;
+
+  /* Teman's orb */
+  --orb-1: #8b5cf6; /* violet */
+  --orb-2: #d946ef; /* magenta */
+  --orb-3: #c4b5fd; /* lavender */
+  --orb-glow: 0 8px 32px -8px rgb(139 92 246 / 0.45);
 
   /* Layout */
-  --app-h: 100dvh; /* replaced with the visible height while the iOS keyboard is open */
+  --app-h: 100dvh; /* visible height while the iOS keyboard is open */
   --kb: 0px; /* keyboard height */
   --nav-h: calc(4rem + max(env(safe-area-inset-bottom), 0.75rem));
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #09090b;
+  --glow-1: #2e1065;
+  --glow-2: #4c1d95;
+  --glow-3: #701a75;
+
+  --surface: #141218;
+  --surface-glass: rgb(20 18 24 / 0.72);
+  --surface-2: #1d1a23;
+  --border: rgb(255 255 255 / 0.08);
+  --border-strong: rgb(255 255 255 / 0.16);
+  --shadow: 0 0 0 0 transparent;
+  --shadow-item: 0 0 0 0 transparent;
+  --shadow-raised: 0 16px 48px rgb(0 0 0 / 0.5);
+  --scrim: rgb(0 0 0 / 0.6);
+
+  --text: #fafafa;
+  --text-2: #a1a1aa;
+  --text-3: #71717a;
+
+  --accent: #a78bfa;
+  --accent-fg: #09090b;
+  --accent-soft: rgb(167 139 250 / 0.14);
+  --active-glow: 0 0 24px -6px rgb(167 139 250 / 0.45);
+
+  --primary-bg: #fafafa;
+  --primary-fg: #09090b;
+
+  --user-bubble-bg: #fafafa;
+  --user-bubble-fg: #09090b;
+  --bot-bubble-bg: #141218;
+
+  --danger: #f87171;
+  --danger-soft-bg: rgb(248 113 113 / 0.14);
+  --danger-soft-fg: #fca5a5;
+
+  --orb-glow: 0 0 48px -4px rgb(167 139 250 / 0.6);
 
   color-scheme: dark;
 }
@@ -63,85 +118,135 @@
 
 @theme inline {
   --color-bg: var(--bg);
-  --color-fg: var(--fg);
-  --color-fg-2: var(--fg-2);
-  --color-fg-3: var(--fg-3);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
   --color-accent: var(--accent);
-  --color-accent-solid: var(--accent-solid);
-  --color-accent-deep: var(--accent-deep);
-  --color-accent-2: var(--accent-2);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-primary: var(--primary-bg);
+  --color-primary-fg: var(--primary-fg);
+  --color-user-bubble: var(--user-bubble-bg);
+  --color-user-bubble-fg: var(--user-bubble-fg);
+  --color-bot-bubble: var(--bot-bubble-bg);
   --color-danger: var(--danger);
-  --color-danger-soft: var(--danger-soft);
-  --color-hairline: var(--hairline);
-  --color-glass-border: var(--glass-border);
-  --color-glass-hover: var(--glass-fill-hover);
+  --color-scrim: var(--scrim);
+  --color-danger-soft: var(--danger-soft-bg);
+  --color-danger-soft-fg: var(--danger-soft-fg);
+  --shadow-soft: var(--shadow);
+  --shadow-raised: var(--shadow-raised);
+  --shadow-active: var(--active-glow);
   --font-sans: var(--font-geist-sans);
 }
 
 @theme {
-  --radius-panel: 24px;
+  --radius-card: 22px;
   --radius-sheet: 28px;
   --radius-item: 16px;
 }
 
 /* =====================================================================
-   Glass surfaces. Three strengths:
-   - glass         frosted panel (header, sidebar, input bar, tab bar)
-   - glass-strong  thicker frost for things on top (menus, sheets)
-   - glass-flat    same look, no blur — for list rows and bubbles, which
-                   sit over the already-blurry glows, so blurring them
-                   would cost GPU time without looking any different.
+   Surfaces (used through components/ui/Surface.tsx)
+   - surface-card    solid card with a soft shadow
+   - surface-item    list rows (tiny shadow, so folding lists don't clip it)
+   - surface-glass   translucent + blur: bars that float over content
+   - surface-raised  solid with a bigger shadow: menus, sheets, toasts
    ===================================================================== */
 
-@utility glass {
-  background: var(--glass-solid);
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 0 var(--glass-highlight);
+@utility surface-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+@utility surface-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-item);
+}
+
+@utility surface-glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 
   @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    background: var(--glass-fill);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    background: var(--surface-glass);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
   }
   @media (prefers-reduced-transparency: reduce) {
-    background: var(--glass-solid);
+    background: var(--surface);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }
 
-@utility glass-strong {
-  background: var(--glass-solid-strong);
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 0 var(--glass-highlight);
-
-  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
-    background: var(--glass-fill-strong);
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
-    backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    background: var(--glass-solid-strong);
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
+@utility surface-raised {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-raised);
 }
 
-@utility glass-flat {
-  background: var(--glass-fill);
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 0 var(--glass-highlight);
+/* =====================================================================
+   Teman's orb: layered radial gradients that slowly morph and turn.
+   ===================================================================== */
 
-  @media (prefers-reduced-transparency: reduce) {
-    background: var(--glass-solid);
-  }
+.orb {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  box-shadow: var(--orb-glow);
+}
+.orb::before,
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+/* Body: violet base, magenta pool low-right, lavender pool low-left. */
+.orb::before {
+  border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
+  background:
+    radial-gradient(circle at 72% 70%, var(--orb-2) 0%, transparent 55%),
+    radial-gradient(circle at 25% 78%, var(--orb-3) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, var(--orb-1) 0%, var(--orb-1) 45%, var(--orb-3) 100%);
+  animation: orb-morph 10s ease-in-out infinite alternate;
+}
+/* Glossy highlight top-left — what makes it read as 3D. */
+.orb::after {
+  border-radius: 9999px;
+  background: radial-gradient(circle at 32% 26%, rgb(255 255 255 / 0.85) 0%, rgb(255 255 255 / 0.15) 22%, transparent 42%);
+}
+.orb[data-thinking]::before {
+  animation-duration: 2.4s;
+}
+.orb[data-thinking] {
+  animation: orb-breathe 1.6s ease-in-out infinite;
 }
 
-/* Crimson fill for primary buttons and the user's chat bubbles. */
-@utility accent-fill {
-  background: linear-gradient(135deg, var(--accent-solid), var(--accent-deep));
-  color: #fff;
-  box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.18);
+@keyframes orb-morph {
+  0% {
+    border-radius: 48% 52% 55% 45% / 50% 45% 55% 50%;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    border-radius: 55% 45% 48% 52% / 45% 55% 50% 50%;
+    transform: rotate(120deg) scale(1.03);
+  }
+  100% {
+    border-radius: 45% 55% 52% 48% / 55% 50% 45% 50%;
+    transform: rotate(240deg) scale(0.98);
+  }
+}
+@keyframes orb-breathe {
+  50% {
+    transform: scale(1.08);
+  }
 }
 
 /* =====================================================================
@@ -150,22 +255,18 @@
 
 @theme {
   --animate-message-in: message-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-  --animate-fade-in: fade-in 220ms ease-out both;
+  --animate-fade-in: fade-in 240ms ease-out both;
   --animate-sheet-up: sheet-up 380ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
   --animate-dialog-in: dialog-in 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-menu-in: menu-in 160ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-pop: pop 360ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
   --animate-ring: ring 520ms ease-out both;
   --animate-draw: draw 280ms ease-out 80ms both;
-  --animate-pulse-dot: pulse-dot 1.4s ease-in-out infinite;
-  --animate-drift-a: drift-a 26s ease-in-out infinite alternate;
-  --animate-drift-b: drift-b 30s ease-in-out infinite alternate;
-  --animate-drift-c: drift-c 22s ease-in-out infinite alternate;
 
   @keyframes message-in {
     from {
       opacity: 0;
-      transform: translateY(10px) scale(0.97);
+      transform: translateY(10px) scale(0.98);
     }
   }
   @keyframes fade-in {
@@ -181,13 +282,13 @@
   @keyframes dialog-in {
     from {
       opacity: 0;
-      transform: translateY(12px) scale(0.96);
+      transform: translateY(12px) scale(0.97);
     }
   }
   @keyframes menu-in {
     from {
       opacity: 0;
-      transform: scale(0.94);
+      transform: scale(0.95);
     }
   }
   @keyframes pop {
@@ -203,7 +304,7 @@
   }
   @keyframes ring {
     from {
-      opacity: 0.7;
+      opacity: 0.6;
       transform: scale(1);
     }
     to {
@@ -219,32 +320,19 @@
       stroke-dashoffset: 0;
     }
   }
-  @keyframes pulse-dot {
-    0%,
-    80%,
-    100% {
-      opacity: 0.25;
-      transform: scale(0.8);
-    }
-    40% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  @keyframes drift-a {
-    to {
-      transform: translate(8vw, 6vh) scale(1.12);
-    }
-  }
-  @keyframes drift-b {
-    to {
-      transform: translate(-10vw, -8vh) scale(1.08);
-    }
-  }
-  @keyframes drift-c {
-    to {
-      transform: translate(6vw, -5vh) scale(0.92);
-    }
+}
+
+/* Smooth colour change while switching themes (added for ~0.4s by lib/theme.ts). */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-switching,
+  .theme-switching *,
+  .theme-switching *::before,
+  .theme-switching *::after {
+    transition:
+      background-color 350ms ease,
+      border-color 350ms ease,
+      color 350ms ease,
+      box-shadow 350ms ease !important;
   }
 }
 
@@ -284,18 +372,17 @@ html {
 }
 
 body {
-  @apply bg-bg font-sans text-fg antialiased;
+  @apply bg-bg font-sans text-text antialiased;
   overscroll-behavior: none;
 }
 
-/* Crimson focus glow for keyboard users. */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: rgb(229 56 59 / 0.4);
+  background: var(--accent-soft);
 }
 
 /* Typing on a phone: the keyboard takes the tab bar's place. */
@@ -305,7 +392,7 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgb(255 255 255 / 0.15) transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .no-scrollbar {

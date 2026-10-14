@@ -1,7 +1,7 @@
 "use client";
 
 import { dismissToast, useToast } from "@/lib/toast";
-import { GlassPanel } from "./GlassPanel";
+import { Surface } from "./Surface";
 
 export function Toast() {
   const toast = useToast();
@@ -13,9 +13,9 @@ export function Toast() {
       className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--nav-h)+6.5rem)] z-40 flex justify-center px-4 md:bottom-28"
     >
       {toast && (
-        <GlassPanel
+        <Surface
           key={toast.id}
-          strength="strong"
+          variant="raised"
           className="pointer-events-auto flex min-h-11 animate-message-in items-center gap-3 rounded-full py-1.5 pr-1.5 pl-5 text-sm"
         >
           <span>{toast.message}</span>
@@ -26,12 +26,12 @@ export function Toast() {
                 toast.action?.run();
                 dismissToast();
               }}
-              className="h-9 rounded-full px-4 font-semibold text-accent hover:bg-glass-hover"
+              className="h-9 rounded-full px-4 font-semibold text-accent hover:bg-accent-soft"
             >
               {toast.action.label}
             </button>
           )}
-        </GlassPanel>
+        </Surface>
       )}
     </div>
   );

@@ -28,11 +28,11 @@ export function TaskSection({
         className="flex h-11 w-full items-center gap-2 rounded-full px-1 text-left text-base font-semibold"
       >
         <ChevronRight
-          className={`size-4 text-fg-3 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
+          className={`size-4 text-text-3 transition-transform duration-200 ${open ? "rotate-90" : ""}`}
           strokeWidth={2}
         />
         {title}
-        <span className="rounded-full bg-white/8 px-2 py-0.5 text-xs font-medium text-fg-2 tabular-nums">
+        <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-text-2 tabular-nums">
           {count}
         </span>
       </button>

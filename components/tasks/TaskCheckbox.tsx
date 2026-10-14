@@ -25,8 +25,8 @@ export function TaskCheckbox({
         <span
           className={`flex size-6 items-center justify-center rounded-full border-[1.5px] transition-colors duration-200 group-active/check:scale-90 ${
             checked
-              ? "animate-pop border-transparent accent-fill shadow-[0_0_14px_-2px_var(--accent)]"
-              : "border-white/35 group-hover/check:border-white/60"
+              ? "animate-pop border-accent bg-accent text-accent-fg shadow-active"
+              : "border-border-strong group-hover/check:border-accent"
           }`}
         >
           {checked && (

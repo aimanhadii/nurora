@@ -1,32 +1,35 @@
 import type { ReactNode } from "react";
-import { GlassPanel } from "@/components/ui/GlassPanel";
+import { ProfileMenu } from "./ProfileMenu";
 
-/** Floating glass header. Content scrolls underneath it. */
+/** Top bar of a screen. Part of the layout flow, so nothing hides under it. */
 export function PageHeader({
   title,
   subtitle,
+  leading,
   actions,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
+  leading?: ReactNode;
   actions?: ReactNode;
 }) {
   return (
-    <div className="sticky top-[calc(env(safe-area-inset-top)+0.5rem)] z-20 md:top-0">
-      <GlassPanel
-        as="header"
-        className="flex items-center gap-3 rounded-panel px-5 py-4 md:px-6 md:py-5"
-      >
+    <header className="shrink-0 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)] pb-3 md:px-6 md:pt-5">
+      {/* Same max width as the content below, so they line up. */}
+      <div className="mx-auto flex max-w-[760px] items-center gap-3">
+        {leading}
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-2xl font-semibold tracking-tight md:text-[28px]">
+          <h1 className="truncate text-xl font-bold tracking-tight md:text-2xl">
             {title}
           </h1>
-          {subtitle && (
-            <p className="mt-0.5 truncate text-sm text-fg-2">{subtitle}</p>
-          )}
+          {subtitle && <p className="truncate text-sm text-text-2">{subtitle}</p>}
         </div>
         {actions}
-      </GlassPanel>
-    </div>
+        {/* Phones have no sidebar, so the profile/theme menu lives here. */}
+        <div className="md:hidden">
+          <ProfileMenu variant="avatar" />
+        </div>
+      </div>
+    </header>
   );
 }
