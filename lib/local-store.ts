@@ -10,7 +10,7 @@ type LocalState = {
   messages: Message[];
 };
 
-const STORAGE_KEY = "teman:v1";
+const STORAGE_KEY = "teman:v2";
 
 let state: LocalState | null = null;
 const listeners = new Set<() => void>();
@@ -29,6 +29,7 @@ function seed(): LocalState {
   const createdAt = now.toISOString();
   const today = dateKeyInDays(now, 0);
   const tomorrow = dateKeyInDays(now, 1);
+  const yesterday = dateKeyInDays(now, -1);
 
   const task = (
     title: string,
@@ -47,21 +48,14 @@ function seed(): LocalState {
 
   return {
     tasks: [
+      task("Pay phone bill", localToUtcIso(yesterday, "21:00")),
       task("Team meeting", localToUtcIso(today, "15:00")),
-      task("Drink 2L water 💧", localToUtcIso(today), true),
+      task("Drink 2L water", localToUtcIso(today), true),
       task("Gym", localToUtcIso(tomorrow, "19:00")),
       task("Buy groceries", null),
       task("Morning walk", localToUtcIso(today, "07:00"), false, true),
     ],
-    messages: [
-      {
-        id: newId(),
-        role: "assistant",
-        content:
-          "Hi! I'm Teman 🌸 Tell me what's on your plate — English or Malay, both okay!",
-        createdAt,
-      },
-    ],
+    messages: [],
   };
 }
 
@@ -98,6 +92,11 @@ function update(change: (current: LocalState) => LocalState) {
     // Storage full or blocked: keep working in memory.
   }
   listeners.forEach((listener) => listener());
+}
+
+/** Current data, for use outside React (e.g. inside event handlers). */
+export function getLocalData(): LocalState {
+  return getSnapshot();
 }
 
 /** Returns null until the browser has loaded the data. */

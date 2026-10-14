@@ -1,17 +1,181 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-sans: var(--font-nunito);
+/* `dark:` utilities follow our data-theme attribute instead of the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------- Design tokens: change colours here, nowhere else ---------- */
+
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f2f2f0;
+  --line: rgb(0 0 0 / 0.08);
+  --line-strong: rgb(0 0 0 / 0.22);
+  --fg: #111111;
+  --muted: #66666a;
+  --subtle: #8e8e93;
+  --accent: #c8f24a;
+  --accent-fg: #111111;
+  --danger: #d4342c;
+  --ring: #111111;
+
+  /* Height of the mobile bottom tab bar; 0 once the sidebar takes over. */
+  --nav-h: calc(3.5rem + env(safe-area-inset-bottom));
+
+  color-scheme: light;
 }
 
+[data-theme="dark"] {
+  --bg: #0b0b0c;
+  --surface: #141416;
+  --surface-2: #1d1d20;
+  --line: rgb(255 255 255 / 0.08);
+  --line-strong: rgb(255 255 255 / 0.24);
+  --fg: #ededee;
+  --muted: #a0a0a6;
+  --subtle: #6f6f76;
+  --accent: #c8f24a;
+  --accent-fg: #0b0b0c;
+  --danger: #ff6b61;
+  --ring: #c8f24a;
+
+  color-scheme: dark;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --nav-h: 0px;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-danger: var(--danger);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-geist-sans);
+}
+
+/* ---------- Motion ---------- */
+
+@theme {
+  --animate-message-in: message-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade-in: fade-in 220ms ease-out both;
+  --animate-sheet-up: sheet-up 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-dialog-in: dialog-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-pop: pop 320ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  --animate-draw: draw 260ms ease-out 60ms both;
+  --animate-typing: typing 1.2s ease-in-out infinite;
+
+  @keyframes message-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+  }
+  @keyframes dialog-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.97);
+    }
+  }
+  @keyframes pop {
+    0% {
+      transform: scale(0.8);
+    }
+    60% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes draw {
+    from {
+      stroke-dashoffset: 24;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes typing {
+    0%,
+    60%,
+    100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    30% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+}
+
+/* Tab switches crossfade (see the ViewTransition in each page). */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ---------- Base ---------- */
+
 html {
-  color-scheme: light;
-  background: var(--color-rose-50);
-  /* No grey flash when tapping buttons on iOS. */
+  background: var(--bg);
   -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-rose-50 font-sans text-stone-800;
+  @apply bg-bg font-sans text-fg;
   overscroll-behavior: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -85,6 +85,31 @@ export function formatDay(
   }).format(new Date(iso));
 }
 
+/** "Wednesday, 14 October" in the user's timezone. */
+export function formatLongDate(date: Date, timeZone = DEFAULT_TIMEZONE): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(date);
+}
+
+/** Time-of-day greeting based on the hour in the user's timezone. */
+export function greeting(date: Date, timeZone = DEFAULT_TIMEZONE): string {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone,
+      hour: "numeric",
+      hourCycle: "h23",
+    }).format(date),
+  );
+  if (hour < 5) return "Still up";
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
+
 /** "YYYY-MM-DD" for `days` days after `now`, in `timeZone`. */
 export function dateKeyInDays(
   now: Date,

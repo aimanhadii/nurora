@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Geist } from "next/font/google";
+import { themeScript } from "@/lib/theme-script";
 import "./globals.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+const geist = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -13,15 +14,30 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fff1f2",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0c" },
+  ],
   // Lets the app draw under the iPhone notch / home bar; we pad with safe-area insets.
   viewportFit: "cover",
+  // Android: shrink the layout when the keyboard opens instead of covering it.
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${nunito.variable} h-full antialiased`}>
-      <body className="h-full">{children}</body>
+    // The inline script changes data-theme before React loads, hence
+    // suppressHydrationWarning on <html>.
+    <html
+      lang="en"
+      data-theme="light"
+      className={`${geist.variable} antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
