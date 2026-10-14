@@ -6,9 +6,19 @@ import { Bookmark, BookmarkCheck, RefreshCw } from "lucide-react";
 import { AFFIRMATIONS, affirmationIndexFor } from "@/lib/affirmations";
 import { toggleSavedAffirmation } from "@/lib/local-store";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Orb } from "@/components/ui/Orb";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function AffirmationCard({
   todayKey,
@@ -21,7 +31,8 @@ export function AffirmationCard({
 }) {
   // Today's pick, plus however many times "refresh" was pressed.
   const [skip, setSkip] = useState(0);
-  const text = AFFIRMATIONS[(affirmationIndexFor(todayKey) + skip) % AFFIRMATIONS.length];
+  const text =
+    AFFIRMATIONS[(affirmationIndexFor(todayKey) + skip) % AFFIRMATIONS.length];
   const isSaved = saved.includes(text);
   const SaveIcon = isSaved ? BookmarkCheck : Bookmark;
 
@@ -51,11 +62,17 @@ export function AffirmationCard({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={isSaved ? "Remove from favourites" : "Save to favourites"}
+                aria-label={
+                  isSaved ? "Remove from favourites" : "Save to favourites"
+                }
                 aria-pressed={isSaved}
                 className={isSaved ? "text-brand" : undefined}
                 onClick={() =>
-                  toast(toggleSavedAffirmation(text) ? "Saved to favourites" : "Removed from favourites")
+                  toast(
+                    toggleSavedAffirmation(text)
+                      ? "Saved to favourites"
+                      : "Removed from favourites",
+                  )
                 }
               >
                 <SaveIcon strokeWidth={1.5} />
@@ -66,7 +83,10 @@ export function AffirmationCard({
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-1 items-center">
-        <blockquote key={text} className="animate-fade-in text-xl font-medium tracking-tight text-balance">
+        <blockquote
+          key={text}
+          className="animate-fade-in font-display text-xl leading-snug font-normal text-balance italic md:text-2xl"
+        >
           “{text}”
         </blockquote>
       </CardContent>

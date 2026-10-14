@@ -26,7 +26,7 @@ export function WeekCard({ days, className }: { days: DayCount[]; className?: st
           {days.map((d) => (
             <li key={d.key} className="flex h-full flex-1 flex-col items-center gap-2">
               <span className="font-mono text-xs tabular-nums text-muted-foreground">
-                {d.count || ""}
+                {d.count}
               </span>
               <div className="flex w-full flex-1 items-end justify-center">
                 <div

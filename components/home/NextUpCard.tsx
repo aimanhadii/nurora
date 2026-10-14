@@ -13,8 +13,8 @@ import { AddTaskButton } from "@/components/tasks/TaskFormDialog";
 
 /** The next timed task, a live countdown, and one-tap Done / Snooze. */
 export function NextUpCard({ tasks, className }: { tasks: Task[]; className?: string }) {
-  // Ticks every second for the countdown; only this card re-renders.
-  const now = useNow(1000);
+  // Minute-level countdown, refreshed every 15s; only this card re-renders.
+  const now = useNow(15_000);
   if (!now) return null;
   const next = nextUpTask(tasks, now);
   const left = next ? countdown(next.dueAt!, now) : "";
@@ -32,7 +32,7 @@ export function NextUpCard({ tasks, className }: { tasks: Task[]; className?: st
         <>
           <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="min-w-0 space-y-1">
-              <p className="truncate text-xl font-semibold tracking-tight">{next.title}</p>
+              <p className="truncate font-display text-2xl font-medium">{next.title}</p>
               {next.notes && (
                 <p className="truncate text-meta text-muted-foreground">{next.notes}</p>
               )}
