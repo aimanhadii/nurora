@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Nurora</title>
+  <defs>
+    <radialGradient id="mint" cx="22%" cy="80%" r="55%">
+      <stop offset="0" stop-color="#5EEAD4"/>
+      <stop offset="1" stop-color="#5EEAD4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pink" cx="80%" cy="20%" r="50%">
+      <stop offset="0" stop-color="#F0A6CA"/>
+      <stop offset="1" stop-color="#F0A6CA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="teal" cx="80%" cy="82%" r="55%">
+      <stop offset="0" stop-color="#22B8CF"/>
+      <stop offset="1" stop-color="#22B8CF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="highlight" cx="30%" cy="24%" r="40%">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="31" fill="#7DD3C8"/>
+  <circle cx="32" cy="32" r="31" fill="url(#mint)"/>
+  <circle cx="32" cy="32" r="31" fill="url(#pink)"/>
+  <circle cx="32" cy="32" r="31" fill="url(#teal)"/>
+  <circle cx="32" cy="32" r="31" fill="url(#highlight)"/>
+</svg>
