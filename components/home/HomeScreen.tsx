@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocalData } from "@/lib/local-store";
-import { PLACEHOLDER_PROFILE } from "@/lib/profile";
+import { useDisplayName } from "@/lib/profile";
 import { groupTasks, todayProgress } from "@/lib/tasks/group";
 import { lastSevenDays, nextUpTask, streakDays } from "@/lib/tasks/stats";
 import { dateKey, formatLongDate, formatTime, greeting } from "@/lib/time";
@@ -36,6 +36,7 @@ function summary(open: Task[], next: Task | null, now: Date): string {
 
 export function HomeScreen() {
   const data = useLocalData();
+  const name = useDisplayName();
   const now = useNow();
 
   if (!data || !now) return <HomeSkeleton />;
@@ -53,7 +54,7 @@ export function HomeScreen() {
   return (
     <Page>
       <PageHeader
-        title={`${greeting(now)}, ${PLACEHOLDER_PROFILE.name}`}
+        title={name ? `${greeting(now)}, ${name}` : greeting(now)}
         description={
           // Phones: the header above already shows the date, so only the summary.
           <>

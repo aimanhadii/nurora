@@ -199,6 +199,8 @@
   --text-3xl--line-height: 31px; /* 1.2 */
   --text-4xl: 32px; /* greeting, desktop */
   --text-4xl--line-height: 38px; /* 1.2 */
+  --text-5xl: 40px; /* welcome headline, desktop */
+  --text-5xl--line-height: 46px; /* 1.15 */
 
   /* Radius: 8 controls, 12 inputs/rows, 16 cards, full pills. */
   --radius-sm: 8px;

@@ -11,7 +11,7 @@ import {
   useConversation,
   useMessages,
 } from "@/lib/conversations";
-import { PLACEHOLDER_PROFILE } from "@/lib/profile";
+import { useDisplayName } from "@/lib/profile";
 import type { Message } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -60,6 +60,7 @@ const scrollPositions = new Map<string, number>();
  */
 export function ChatScreen({ conversationId }: { conversationId: string | null | undefined }) {
   const router = useRouter();
+  const name = useDisplayName();
   const messages = useMessages(conversationId);
   const conversation = useConversation(conversationId);
   const typing = useTyping(conversationId);
@@ -138,7 +139,7 @@ export function ChatScreen({ conversationId }: { conversationId: string | null |
             <ChatSkeleton />
           ) : empty ? (
             <ChatEmpty
-              name={PLACEHOLDER_PROFILE.name}
+              name={name}
               subtitle="A little light for your day."
               onPick={send}
             />

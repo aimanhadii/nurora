@@ -1,7 +1,10 @@
 "use client";
 
-import { ChevronsUpDown, Monitor, Moon, Settings, Sun } from "lucide-react";
-import { PLACEHOLDER_PROFILE } from "@/lib/profile";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ChevronsUpDown, LogOut, Monitor, Moon, Settings, Sun } from "lucide-react";
+import { signOut, useSession } from "@/lib/auth";
+import { useDisplayName } from "@/lib/profile";
 import { setThemePreference, useThemePreference, type ThemePreference } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -22,11 +25,21 @@ const THEMES: { value: ThemePreference; label: string; Icon: typeof Sun }[] = [
   { value: "system", label: "System", Icon: Monitor },
 ];
 
+/** What to call the user in the menu: their name, else their email's first part. */
+function useMenuIdentity() {
+  const session = useSession();
+  const name = useDisplayName();
+  const email = session?.email ?? "";
+  const label = name || email.split("@")[0] || "You";
+  return { label, email, initial: label.charAt(0).toUpperCase() };
+}
+
 export function ProfileAvatar({ className }: { className?: string }) {
+  const { initial } = useMenuIdentity();
   return (
     <Avatar className={className}>
       <AvatarFallback className="bg-brand-soft text-meta font-medium text-brand-text">
-        {PLACEHOLDER_PROFILE.name[0]}
+        {initial}
       </AvatarFallback>
     </Avatar>
   );
@@ -38,7 +51,14 @@ export function ProfileAvatar({ className }: { className?: string }) {
  */
 export function ProfileMenu({ variant }: { variant: "pill" | "icon" | "avatar" }) {
   const theme = useThemePreference();
-  const name = PLACEHOLDER_PROFILE.name;
+  const router = useRouter();
+  const { label: name, email } = useMenuIdentity();
+
+  function handleSignOut() {
+    signOut();
+    toast("Signed out");
+    router.replace("/");
+  }
 
   return (
     <DropdownMenu>
@@ -57,7 +77,7 @@ export function ProfileMenu({ variant }: { variant: "pill" | "icon" | "avatar" }
           <>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm">{name}</span>
-              <span className="block truncate text-xs text-muted-foreground">Kuala Lumpur</span>
+              <span className="block truncate text-xs text-muted-foreground">{email}</span>
             </span>
             <ChevronsUpDown className="size-4 text-muted-foreground" strokeWidth={1.5} />
           </>
@@ -85,6 +105,11 @@ export function ProfileMenu({ variant }: { variant: "pill" | "icon" | "avatar" }
           <Settings strokeWidth={1.5} />
           Settings
           <span className="ml-auto text-xs text-muted-foreground">Soon</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={handleSignOut}>
+          <LogOut strokeWidth={1.5} />
+          Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

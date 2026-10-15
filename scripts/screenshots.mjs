@@ -96,6 +96,11 @@ for (const theme of THEMES) {
         reducedMotion: "reduce",
       });
       await context.addInitScript((t) => {
+        // App pages need a (fake) signed-in, onboarded user.
+        if (!localStorage.getItem("nurora:session")) {
+          localStorage.setItem("nurora:session", JSON.stringify({ userId: "demo", email: "aiman@example.com", provider: "email", signedInAt: new Date().toISOString() }));
+          localStorage.setItem("nurora:profiles:v1", JSON.stringify({ demo: { name: "Aiman", tone: "gentle", briefTime: "07:30", checkinTime: "21:30", notifications: "later", onboardedAt: new Date().toISOString() } }));
+        }
         if (t === "dark") localStorage.setItem("nurora:theme", "dark");
         else localStorage.removeItem("nurora:theme");
         // Hide the Next.js dev-tools badge/overlay: it's dev-only, covers

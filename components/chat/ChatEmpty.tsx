@@ -15,7 +15,7 @@ export function ChatEmpty({
     <div className="flex flex-1 animate-fade-in flex-col items-center justify-center gap-8 py-8">
       <Orb size={88} animated />
       <div className="text-center">
-        <p className="text-base text-muted-foreground">Hi, {name}</p>
+        <p className="text-base text-muted-foreground">{name ? `Hi, ${name}` : "Hi there"}</p>
         <h2 className="mt-2 font-display text-3xl md:text-4xl">
           How can I help today?
         </h2>
